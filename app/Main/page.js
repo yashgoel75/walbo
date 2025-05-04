@@ -5,10 +5,10 @@ import { useState } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 
 import Image from "next/image";
-import logo from "../public/WalboLogo.png";
-import google from "../public/google.png";
-import metamask from "../public/MetaMask.png";
-import "./Main.css";
+import logo from "../../public/WalboLogo.png";
+import google from "../../public/google.png";
+import metamask from "../../public/MetaMask.png";
+import "./page.css";
 
 import { createWalletClient, custom } from "viem";
 import { sepolia } from "viem/chains";
@@ -32,10 +32,12 @@ function Main() {
         transport: custom(window.ethereum),
       });
 
-      const [addresses] = await client.requestAddresses();
-      const address = addresses[0];
+      const [address] = await client.requestAddresses();
       console.log("Connected wallet address:", address);
-      router.push("/Dashboard");
+      setTimeout(function () {
+        router.push("/Dashboard")
+      }, 1000);
+      
     } else {
       setmetamaskinstalled(false);
     }
