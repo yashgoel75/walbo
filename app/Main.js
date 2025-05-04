@@ -9,6 +9,9 @@ import google from "../public/google.png";
 import metamask from "../public/MetaMask.png";
 import "./Main.css";
 
+import { createWalletClient, custom } from "viem";
+import { sepolia } from "viem/chains";
+
 function Main() {
   const router = useRouter();
 
@@ -18,6 +21,19 @@ function Main() {
 
   const handleSignUp = () => {
     router.push("/SignUp");
+  };
+
+  const handleMetaMaskLogin = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      const client = createWalletClient({
+        chain: sepolia,
+        transport: custom(window.ethereum),
+      });
+
+      const [addresses] = await client.requestAddresses();
+      const address = addresses[0];
+      console.log("Connected wallet address:", address);
+    }
   };
 
   return (
@@ -44,7 +60,9 @@ function Main() {
                 <div className="Image">
                   <Image src={metamask} width={35} alt="MetaMask"></Image>
                 </div>
-                <div className="content">Continue with MetaMask</div>
+                <div className="content" onClick={handleMetaMaskLogin}>
+                  Continue with MetaMask
+                </div>
               </div>
             </div>
           </div>
