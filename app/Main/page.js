@@ -2,11 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { GoogleAuthProvider } from "firebase/auth";
 
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
-import google from "../../public/google.png";
 import metamask from "../../public/MetaMask.png";
 import "./page.css";
 
@@ -15,14 +13,6 @@ import { sepolia } from "viem/chains";
 
 function Main() {
   const router = useRouter();
-
-  const handleLogin = () => {
-    router.push("/Login");
-  };
-
-  const handleSignUp = () => {
-    router.push("/SignUp");
-  };
     const [metamaskinstalled, setmetamaskinstalled] = useState(true);
     
   const handleMetaMaskLogin = async () => {
@@ -51,18 +41,9 @@ function Main() {
             <Image src={logo} width={400} alt="Walbo"></Image>
           </div>
           <div className="login">
-            <ul>
-              <li onClick={handleSignUp}>Sign Up</li>
-              <li onClick={handleLogin}>Login</li>
-            </ul>
+            
             <div className="SocialLoginContainer">
-              <div className="SocialLogin">
-                <div className="Image">
-                  <Image src={google} width={70} alt="Google"></Image>
-                </div>
-
-                <div className="content">Continue with Google</div>
-              </div>
+              
               <div className="SocialLogin">
                 <div className="Image">
                   <Image src={metamask} width={35} alt="MetaMask"></Image>

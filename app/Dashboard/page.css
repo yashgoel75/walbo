@@ -1,4 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap");
+.cal-sans-regular {
+  font-family: "Cal Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .Header {
     display: flex;
     justify-content: center;
+}
+.address {
+    margin: 13px 0px;
+    padding: 0px 15px;
+    font-family: 'Cal Sans';
+    font-size: 20px;
+    width: 100%;
+    background-color: rgb(255, 196, 0);
 }

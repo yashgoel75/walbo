@@ -52,14 +52,13 @@
 }
 .SocialLogin .Image {
   display: flex;
-  width: 20%;
+  width: 30%;
   justify-content: center;
   align-items: center;
 }
 .SocialLogin .content {
   font-family: "Cal Sans";
-  text-align: center;
-  width: 80%;
+  width: 70%;
 }
 .SocialLogin:hover {
   cursor: pointer;

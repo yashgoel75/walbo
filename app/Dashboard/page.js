@@ -10,8 +10,8 @@ import logo from "../../public/WalboLogo.png";
 import "./page.css";
 
 function Dashboard() {
+    const [address, setaddress] = useState(undefined);
   const router = useRouter();
-
   const main = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
@@ -23,7 +23,8 @@ function Dashboard() {
         const [address] = await client.getAddresses();
 
         if (typeof address !== "undefined") {
-          console.log("Hello, wallet connected:", address);
+            console.log("Hello, wallet connected:", address);
+            setaddress(address);
         } else {
           console.log("No address found. Redirecting...");
           router.push("/Main");
@@ -37,7 +38,7 @@ function Dashboard() {
       router.push("/Main");
     }
   };
-
+    
   useEffect(() => {
     main();
   }, []);
@@ -46,7 +47,8 @@ function Dashboard() {
     <>
       <div className="Header">
         <Image src={logo} width={200} alt="Walbo" />
-          </div>
+      </div>
+          <div className="address">Welcome {address}</div>
           
     </>
   );
