@@ -1,6 +1,6 @@
 "use client";
 
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -12,6 +12,7 @@ import { createWalletClient, custom } from "viem";
 import { sepolia } from "viem/chains";
 
 function ContactList() {
+   
   const router = useRouter();
   const [address, setaddress] = useState("");
   const [addContactForm, setaddContactForm] = useState(false);
@@ -48,6 +49,9 @@ function ContactList() {
   const handleCloseAddContactForm = () => {
     setaddContactForm(false);
   };
+    const handleSearch = () => {
+
+    }
   const handleSave = () => {};
   useEffect(() => {
     main();
@@ -103,7 +107,10 @@ function ContactList() {
       </div>
       <div className="partition"></div>
       <div className="heading">Contacts</div>
-      <div className="addContactContainer">
+          <div className="addContactContainer">
+          <div className="searchContact" onClick={handleSearch}>
+            <input type="text" name="search" id="search" placeholder="Seach a Contact"></input>
+        </div> 
         <div className="addContact" onClick={handleAddContact}>
           Add Contact
         </div>
