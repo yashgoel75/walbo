@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 
 import Image from "next/image";
@@ -22,7 +23,8 @@ function Main() {
   const handleSignUp = () => {
     router.push("/SignUp");
   };
-
+    const [metamaskinstalled, setmetamaskinstalled] = useState(true);
+    
   const handleMetaMaskLogin = async () => {
     if (typeof window.ethereum !== "undefined") {
       const client = createWalletClient({
@@ -33,6 +35,9 @@ function Main() {
       const [addresses] = await client.requestAddresses();
       const address = addresses[0];
       console.log("Connected wallet address:", address);
+      router.push("/Dashboard");
+    } else {
+      setmetamaskinstalled(false);
     }
   };
 
@@ -64,6 +69,13 @@ function Main() {
                   Continue with MetaMask
                 </div>
               </div>
+              {metamaskinstalled ? (
+                ""
+              ) : (
+                <div className="installMetaMask">
+                  Please install MetaMask in your browser!
+                </div>
+              )}
             </div>
           </div>
         </div>
