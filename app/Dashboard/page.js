@@ -88,7 +88,7 @@ function Dashboard() {
     router.push(`/ContactList`);
   };
   const [receiverAddress, setreceiverAddress] = useState("");
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState("");
 
   const handleAddressChange = (e) => {
     setreceiverAddress(e.target.value);
@@ -113,10 +113,15 @@ function Dashboard() {
     });
     setisPublicTransactionPending(true);
     const receipt = await waitForTransactionReceipt(client, { hash });
-    if (typeof receipt !== undefined) {
+    if (receipt !== undefined) {
       setisPublicTransactionPending(false);
       setisPublicTransactionSuccess(true);
+      setAmount("");
+      setreceiverAddress("");
     }
+    setTimeout(() => {
+      setisPublicTransactionSuccess(false);
+    }, 5000);
   };
 
   return (
@@ -156,7 +161,13 @@ function Dashboard() {
             </svg>
           </div>
         ) : (
-          <div className="getBalance" onClick={() => setisVisible(true)}>
+          <div
+            className="getBalance"
+            onClick={() => {
+              setisVisible(true);
+              if (address) getBalance(address);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -217,7 +228,9 @@ function Dashboard() {
         <div className="paymentProcessing">
           <div className="payPublicKeyHeading">Pay to Public Key</div>
           {isPublicTransactionPending ? (
-            <div className="transactionPending">Transaction Pending... Please Wait!</div>
+            <div className="transactionPending">
+              Transaction Pending... Please Wait!
+            </div>
           ) : (
             ""
           )}
