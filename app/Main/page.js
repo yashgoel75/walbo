@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { auth, provider as GoogleProvider, signInWithPopup } from "../firebase";
+// import { auth, provider as GoogleProvider, signInWithPopup } from "../firebase";
 
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
 import metamask from "../../public/MetaMask.png";
-import google from "../../public/Google.png";
+// import google from "../../public/Google.png";
 import "./page.css";
 
 import { createWalletClient, custom } from "viem";
@@ -17,19 +17,19 @@ function Main() {
   const router = useRouter();
   const [metamaskinstalled, setmetamaskinstalled] = useState(true);
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, GoogleProvider);
-      const user = result.user;
-      console.log("User:", result.user);
-      const query = `?uid=${user.uid}&name=${encodeURIComponent(
-        user.displayName
-      )}`;
-      router.push(`/Dashboard${query}`);
-    } catch (error) {
-      console.error("Google Sign-In Error:", error);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, GoogleProvider);
+  //     const user = result.user;
+  //     console.log("User:", result.user);
+  //     const query = `?uid=${user.uid}&name=${encodeURIComponent(
+  //       user.displayName
+  //     )}`;
+  //     router.push(`/Dashboard${query}`);
+  //   } catch (error) {
+  //     console.error("Google Sign-In Error:", error);
+  //   }
+  // };
   const handleMetaMaskLogin = async () => {
     if (typeof window.ethereum !== "undefined") {
       const client = createWalletClient({
@@ -56,14 +56,14 @@ function Main() {
           </div>
           <div className="login">
             <div className="SocialLoginContainer">
-              <div className="SocialLogin">
+              {/* <div className="SocialLogin">
                 <div className="Image">
                   <Image src={google} width={70} alt="Google"></Image>
                 </div>
                 <div className="content" onClick={handleGoogleLogin}>
                   Continue with Google
                 </div>
-              </div>
+              </div> */}
               <div className="SocialLogin">
                 <div className="Image">
                   <Image src={metamask} width={35} alt="MetaMask"></Image>

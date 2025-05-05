@@ -12,10 +12,10 @@ import { createWalletClient, custom } from "viem";
 import { sepolia } from "viem/chains";
 
 function ContactList() {
-   const searchParams = useSearchParams();
+  //  const searchParams = useSearchParams();
    
-     const name = searchParams.get("name");
-     const uid = searchParams.get("uid");
+  //    const name = searchParams.get("name");
+  //    const uid = searchParams.get("uid");
   const router = useRouter();
   const [address, setaddress] = useState("");
   const [addContactForm, setaddContactForm] = useState(false);
@@ -32,9 +32,11 @@ function ContactList() {
         if (typeof address !== "undefined") {
           console.log("Hello, wallet connected:", address);
           setaddress(address);
-        } else if (typeof uid != "undefined") {
-          console.log("Hello, Google Account connected:", uid);
-        }else {
+        }
+        // else if (typeof uid != "undefined") {
+        //   console.log("Hello, Google Account connected:", uid);
+        // }
+        else {
           console.log("No address found. Redirecting...");
           router.push("/Main");
         }
@@ -42,9 +44,11 @@ function ContactList() {
         console.error("Error accessing wallet:", error);
         router.push("/Main");
       }
-    }else if (typeof uid != "undefined") {
-      console.log("Hello, Google Account connected:", uid);
-    } else {
+    }
+    // else if (typeof uid != "undefined") {
+    //   console.log("Hello, Google Account connected:", uid);
+    // }
+    else {
       console.log("MetaMask not found. Redirecting...");
       router.push("/Main");
     }

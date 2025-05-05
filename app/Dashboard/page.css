@@ -14,7 +14,7 @@
   font-style: normal;
 }
 
-.Header {
+.DashboardHeader {
   display: flex;
   width: 90%;
   padding: 12px 0px;
@@ -22,13 +22,13 @@
   justify-content: space-between;
   align-items: center;
 }
-.Header ul {
+.DashboardHeader .nav ul {
   display: flex;
 }
-.Header ul li {
+.DashboardHeader ul li {
   font-family: 'Inter';
   margin: 0px 10px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 550;
   font-size: 19px;
 }
