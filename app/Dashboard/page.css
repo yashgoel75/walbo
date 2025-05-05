@@ -32,3 +32,50 @@
   font-weight: 550;
   font-size: 19px;
 }
+
+.AccountRelatedOperations {
+  width: 90%;
+  display: flex;
+  margin: auto;
+  padding: 2px 5px;
+  align-items: center;
+}
+.AccountRelatedOperations .getBalance {
+  display: flex;
+  padding: 2px 5px;
+  font-family: 'Inter';
+  font-size: 20px;
+  font-weight: 600;
+}
+.AccountRelatedOperations .balance {
+  display: flex;
+  padding: 2px 5px;
+  font-family: 'Inter';
+  font-size: 20px;
+  font-weight: 400;
+}
+.paymentOptions {
+  width: 90%;
+  display: flex;
+  margin: auto;
+  padding: 20px 5px;
+  align-items: center;
+  transition: 0.3s ease
+}
+.paymentOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+  margin: 0px 20px;
+  cursor: pointer;
+}
+.paymentOption .paymentImage {
+  display: flex;
+  align-items: center;
+  height: 70px;
+}
+.paymentOption:hover {
+  transform: scale(1.1);
+}
