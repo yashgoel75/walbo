@@ -19,6 +19,8 @@ import "./page.css";
 function Dashboard() {
   const [address, setaddress] = useState(undefined);
   const [isVisible, setisVisible] = useState(false);
+  const [isWalboIdPayment, setisWalboIdPayment] = useState(false);
+  const [isContactsPayment, setisContactsPayment] = useState(false);
   const [isPublicPayment, setisPublicPayment] = useState(false);
   const [isPublicTransactionPending, setisPublicTransactionPending] =
     useState(false);
@@ -181,7 +183,14 @@ function Dashboard() {
         )}
       </div>
       <div className="paymentOptions">
-        <div className="paymentOption">
+        <div
+          className="paymentOption"
+          onClick={() => {
+            setisWalboIdPayment(true);
+            if (isContactsPayment) setisContactsPayment(false);
+            if (isPublicPayment) setisPublicPayment(false);
+          }}
+        >
           <div className="paymentImage">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +204,14 @@ function Dashboard() {
           </div>
           <div className="paymentName">Pay Walbo ID</div>
         </div>
-        <div className="paymentOption">
+        <div
+          className="paymentOption"
+          onClick={() => {
+            setisContactsPayment(true);
+            if (isWalboIdPayment) setisWalboIdPayment(false);
+            if (isPublicPayment) setisPublicPayment(false);
+          }}
+        >
           <div className="paymentImage">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +225,14 @@ function Dashboard() {
           </div>
           <div className="paymentName">Pay Contacts</div>
         </div>
-        <div className="paymentOption" onClick={() => setisPublicPayment(true)}>
+        <div
+          className="paymentOption"
+          onClick={() => {
+            setisPublicPayment(true);
+            if (isWalboIdPayment) setisWalboIdPayment(false);
+            if (isContactsPayment) setisContactsPayment(false);
+          }}
+        >
           <div className="paymentImage">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -224,8 +247,101 @@ function Dashboard() {
           <div className="paymentName">Pay Public Key</div>
         </div>
       </div>
+
+      {isWalboIdPayment ? (
+        <div className="payWalboContainer">
+          <div className="payWalboHeading">Pay to Walbo ID</div>
+          {isPublicTransactionPending ? (
+            <div className="transactionPending">
+              Transaction Pending... Please Wait!
+            </div>
+          ) : (
+            ""
+          )}
+          {isPublicTransactionSuccess ? (
+            <div className="transactionSuccess">Transaction Successful!</div>
+          ) : (
+            ""
+          )}
+
+          <div className="payWalboContent">
+            <label htmlFor="walboId" name="walboId" id="walboId">
+              Enter the Walbo ID of the receiver:
+            </label>
+            <input
+              id="walboId"
+              name="walboId"
+              placeholder="0x..."
+              value={receiverAddress}
+              onChange={handleAddressChange}
+            ></input>
+            <label htmlFor="amount" name="amount" id="amount">
+              Enter amount (in Ethers):
+            </label>
+            <input
+              id="amount"
+              name="amount"
+              placeholder="0.01"
+              value={amount}
+              onChange={handleAmountChange}
+            ></input>
+            <button onClick={() => handleSendTransaction()}>
+              Send Transaction
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+
+      {isContactsPayment ? (
+        <div className="payContactsContainer">
+          <div className="payContactsHeading">Pay to a Contact</div>
+          {isPublicTransactionPending ? (
+            <div className="transactionPending">
+              Transaction Pending... Please Wait!
+            </div>
+          ) : (
+            ""
+          )}
+          {isPublicTransactionSuccess ? (
+            <div className="transactionSuccess">Transaction Successful!</div>
+          ) : (
+            ""
+          )}
+
+          <div className="payContactContent">
+            <label htmlFor="contact" name="contact" id="contact">
+              Enter the name to pay:
+            </label>
+            <input
+              id="contact"
+              name="contact"
+              placeholder="Search a Name"
+              value={receiverAddress}
+              onChange={handleAddressChange}
+            ></input>
+            <label htmlFor="amount" name="amount" id="amount">
+              Enter amount (in Ethers):
+            </label>
+            <input
+              id="amount"
+              name="amount"
+              placeholder="0.01"
+              value={amount}
+              onChange={handleAmountChange}
+            ></input>
+            <button onClick={() => handleSendTransaction()}>
+              Send Transaction
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+
       {isPublicPayment ? (
-        <div className="paymentProcessing">
+        <div className="payPublicContainer">
           <div className="payPublicKeyHeading">Pay to Public Key</div>
           {isPublicTransactionPending ? (
             <div className="transactionPending">
