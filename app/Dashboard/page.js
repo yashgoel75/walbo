@@ -10,6 +10,7 @@ import {
   formatEther,
 } from "viem";
 import { sepolia } from "viem/chains";
+import { waitForTransactionReceipt } from "viem/actions";
 
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
@@ -18,6 +19,11 @@ import "./page.css";
 function Dashboard() {
   const [address, setaddress] = useState(undefined);
   const [isVisible, setisVisible] = useState(false);
+  const [isPublicPayment, setisPublicPayment] = useState(false);
+  const [isPublicTransactionPending, setisPublicTransactionPending] =
+    useState(false);
+  const [isPublicTransactionSuccess, setisPublicTransactionSuccess] =
+    useState(false);
   const router = useRouter();
   // const searchParams = useSearchParams();
   // const name = searchParams.get("name");
@@ -81,6 +87,38 @@ function Dashboard() {
   const handleContactButton = () => {
     router.push(`/ContactList`);
   };
+  const [receiverAddress, setreceiverAddress] = useState("");
+  const [amount, setAmount] = useState();
+
+  const handleAddressChange = (e) => {
+    setreceiverAddress(e.target.value);
+  };
+
+  const handleAmountChange = (e) => {
+    setAmount(e.target.value);
+  };
+
+  const handleSendTransaction = async () => {
+    const client = createWalletClient({
+      chain: sepolia,
+      transport: custom(window.ethereum),
+    });
+
+    const [address] = await client.getAddresses();
+
+    const hash = await client.sendTransaction({
+      account: address,
+      to: receiverAddress,
+      value: parseEther(amount),
+    });
+    setisPublicTransactionPending(true);
+    const receipt = await waitForTransactionReceipt(client, { hash });
+    if (typeof receipt !== undefined) {
+      setisPublicTransactionPending(false);
+      setisPublicTransactionSuccess(true);
+    }
+  };
+
   return (
     <>
       <div className="DashboardHeader">
@@ -160,7 +198,7 @@ function Dashboard() {
           </div>
           <div className="paymentName">Pay Contacts</div>
         </div>
-        <div className="paymentOption">
+        <div className="paymentOption" onClick={() => setisPublicPayment(true)}>
           <div className="paymentImage">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -175,6 +213,49 @@ function Dashboard() {
           <div className="paymentName">Pay Public Key</div>
         </div>
       </div>
+      {isPublicPayment ? (
+        <div className="paymentProcessing">
+          <div className="payPublicKeyHeading">Pay to Public Key</div>
+          {isPublicTransactionPending ? (
+            <div className="transactionPending">Transaction Pending... Please Wait!</div>
+          ) : (
+            ""
+          )}
+          {isPublicTransactionSuccess ? (
+            <div className="transactionSuccess">Transaction Successful!</div>
+          ) : (
+            ""
+          )}
+
+          <div className="payPublicKeyContent">
+            <label htmlFor="publicKey" name="publicKey" id="publicKey">
+              Enter the Public Key:
+            </label>
+            <input
+              id="publicKey"
+              name="publicKey"
+              placeholder="0x..."
+              value={receiverAddress}
+              onChange={handleAddressChange}
+            ></input>
+            <label htmlFor="amount" name="amount" id="amount">
+              Enter amount (in Ethers):
+            </label>
+            <input
+              id="amount"
+              name="amount"
+              placeholder="0.01"
+              value={amount}
+              onChange={handleAmountChange}
+            ></input>
+            <button onClick={() => handleSendTransaction()}>
+              Send Transaction
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
 }
