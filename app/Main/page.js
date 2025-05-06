@@ -11,11 +11,14 @@ import metamask from "../../public/MetaMask.png";
 import "./page.css";
 
 import { createWalletClient, custom } from "viem";
-import { sepolia } from "viem/chains";
+import { flare, sepolia } from "viem/chains";
 
 function Main() {
   const router = useRouter();
   const [metamaskinstalled, setmetamaskinstalled] = useState(true);
+  const [isConnecting, setisConnecting] = useState(false);
+  const [isConnected, setisConnected] = useState(false);
+  const [isRequestRejected, setisRequestRejected] = useState(false);
 
   // const handleGoogleLogin = async () => {
   //   try {
@@ -38,15 +41,26 @@ function Main() {
       });
 
       try {
+        setisRequestRejected(false);
+        setisConnecting(true);
         const [address] = await client.requestAddresses();
         console.log("Connected wallet address:", address);
+        setisConnecting(false);
+        setisConnected(true);
+
+
+        // Checks new user
+
+
         setTimeout(function () {
           router.push(`/Dashboard?wallet=${address}`);
         }, 1000);
       } catch (err) {
+        setisConnecting(false);
+        setisRequestRejected(true);
+        setTimeout(() => setisRequestRejected(false), 3000);
         console.error("User rejected MetaMask connection:", err);
       }
-     
     } else {
       setmetamaskinstalled(false);
     }
@@ -69,13 +83,11 @@ function Main() {
                   Continue with Google
                 </div>
               </div> */}
-              <div className="SocialLogin">
+              <div className="SocialLogin" onClick={handleMetaMaskLogin}>
                 <div className="Image">
                   <Image src={metamask} width={35} alt="MetaMask"></Image>
                 </div>
-                <div className="content" onClick={handleMetaMaskLogin}>
-                  Continue with MetaMask
-                </div>
+                <div className="content">Continue with MetaMask</div>
               </div>
               {metamaskinstalled ? (
                 ""
@@ -83,6 +95,17 @@ function Main() {
                 <div className="installMetaMask">
                   Please install MetaMask in your browser!
                 </div>
+              )}
+              {isConnecting ? (
+                <div className="connecting">Connecting... Please Wait!</div>
+              ) : (
+                ""
+              )}
+              {isConnected ? <div className="connected">Connected!</div> : ""}
+              {isRequestRejected ? (
+                <div className="installMetaMask">Request Rejected</div>
+              ) : (
+                ""
               )}
             </div>
           </div>

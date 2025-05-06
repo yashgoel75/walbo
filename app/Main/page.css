@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Onest:wght@100..900&display=swap");
+
 .cal-sans-regular {
   font-family: "Cal Sans", sans-serif;
   font-weight: 400;
@@ -72,5 +74,31 @@
   font-family: "Cal Sans";
   color: rgb(104, 1, 1);
   height: 40px;
+  border-radius: 6px;
+}
+.connected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(14, 158, 50, 0.885);
+  font-size: 18px;
+  font-family: "Cal Sans";
+  padding: 5px 10px;
+  margin: 8px 0px 0px 0px;
+  font-weight: 500;
+  color: rgb(3, 69, 9);
+  border-radius: 6px;
+}
+.connecting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(153, 143, 6, 0.885);
+  font-size: 18px;
+  font-family: "Cal Sans";
+  padding: 5px 10px;
+  margin: 8px 0px 0px 0px;
+  font-weight: 500;
+  color: rgb(86, 81, 4);
   border-radius: 6px;
 }
