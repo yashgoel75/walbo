@@ -69,6 +69,13 @@ function Dashboard() {
     }
   };
 
+  window.ethereum.on('accountsChanged', (accounts) => {
+    if (accounts.length === 0) {
+      router.push("/Main");
+    }
+  });
+
+
   const [balance, setBalance] = useState();
 
   const getBalance = async (address) => {
@@ -140,7 +147,7 @@ function Dashboard() {
     <>
       <div className="DashboardHeader">
         <div>
-          <Image src={logo} width={200} alt="Walbo" />{" "}
+          <Image src={logo} width={200} alt="Walbo" priority/>
         </div>
 
         <div className="nav">

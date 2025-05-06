@@ -19,6 +19,8 @@ function Main() {
   const [isConnecting, setisConnecting] = useState(false);
   const [isConnected, setisConnected] = useState(false);
   const [isRequestRejected, setisRequestRejected] = useState(false);
+  const [isNewUser, setisNewUser] = useState(false);
+  const [signInWithMetaMask, setsignInWithMetaMask] = useState(true);
 
   // const handleGoogleLogin = async () => {
   //   try {
@@ -50,7 +52,6 @@ function Main() {
 
         // Checks new user
 
-        
         setTimeout(function () {
           router.push(`/Dashboard?wallet=${address}`);
         }, 1000);
@@ -82,12 +83,17 @@ function Main() {
                   Continue with Google
                 </div>
               </div> */}
-              <div className="SocialLogin" onClick={handleMetaMaskLogin}>
-                <div className="Image">
-                  <Image src={metamask} width={35} alt="MetaMask"></Image>
+
+              {signInWithMetaMask ? (
+                <div className="SocialLogin" onClick={handleMetaMaskLogin}>
+                  <div className="Image">
+                    <Image src={metamask} width={35} alt="MetaMask"></Image>
+                  </div>
+                  <div className="content">Continue with MetaMask</div>
                 </div>
-                <div className="content">Continue with MetaMask</div>
-              </div>
+              ) : (
+                ""
+              )}
               {metamaskinstalled ? (
                 ""
               ) : (

@@ -102,3 +102,51 @@
   color: rgb(86, 81, 4);
   border-radius: 6px;
 }
+.newUserContainer {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding: 5px 20px;
+  align-items: center;
+  border: 1px solid rgba(188, 188, 188, 0.61);
+  border-radius: 4px;
+}
+.newUserContainer .newUserHeading {
+  font-family: "Cal Sans";
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+.newUserContainer .newUserContent {
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 400;
+  margin: 12px 0px;
+  width: 100%;
+  text-align: left;
+}
+.newUserContent input {
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 400;
+  margin: 12px 0px;
+  padding: 1px 10px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(174, 174, 174, 0.558);
+}
+.newUserContent button {
+  font-family: "Inter";
+  font-size: 18px;
+  width: fit-content;
+  display: flex;
+  margin: auto;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background-color: rgba(141, 141, 141, 0.672);
+  transition: 0.3s ease;
+}
+.newUserContent button:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
