@@ -69,12 +69,21 @@ function Dashboard() {
     }
   };
 
-  window.ethereum.on('accountsChanged', (accounts) => {
-    if (accounts.length === 0) {
-      router.push("/Main");
-    }
-  });
+  useEffect(() => {
+    if (!window.ethereum) return;
 
+    const handleAccountsChanged = (accounts) => {
+      if (accounts.length === 0) {
+        router.push("/Main");
+      }
+    };
+
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+    return () => {
+      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+    };
+  }, []);
 
   const [balance, setBalance] = useState();
 
@@ -147,7 +156,7 @@ function Dashboard() {
     <>
       <div className="DashboardHeader">
         <div>
-          <Image src={logo} width={200} alt="Walbo" priority/>
+          <Image src={logo} width={200} alt="Walbo" priority />
         </div>
 
         <div className="nav">
