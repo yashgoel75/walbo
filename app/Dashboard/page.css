@@ -239,6 +239,18 @@
   transform: scale(1.1);
   cursor: pointer;
 }
+.transactionFailed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(228, 60, 60, 0.822);
+  font-size: 18px;
+  font-family: "Cal Sans";
+  color: rgb(104, 1, 1);
+  height: 40px;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
 .transactionSuccess {
   display: flex;
   justify-content: center;

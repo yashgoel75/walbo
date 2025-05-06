@@ -22,6 +22,7 @@ function Dashboard() {
   const [isWalboIdPayment, setisWalboIdPayment] = useState(false);
   const [isContactsPayment, setisContactsPayment] = useState(false);
   const [isPublicPayment, setisPublicPayment] = useState(false);
+  const [isPublicPaymentFailed, setisPublicPaymentFailed] = useState(false);
   const [isPublicTransactionPending, setisPublicTransactionPending] =
     useState(false);
   const [isPublicTransactionSuccess, setisPublicTransactionSuccess] =
@@ -101,29 +102,38 @@ function Dashboard() {
   };
 
   const handleSendTransaction = async () => {
+    setisPublicPaymentFailed(false);
     const client = createWalletClient({
       chain: sepolia,
       transport: custom(window.ethereum),
     });
 
     const [address] = await client.getAddresses();
-
-    const hash = await client.sendTransaction({
-      account: address,
-      to: receiverAddress,
-      value: parseEther(amount),
-    });
-    setisPublicTransactionPending(true);
-    const receipt = await waitForTransactionReceipt(client, { hash });
-    if (receipt !== undefined) {
-      setisPublicTransactionPending(false);
-      setisPublicTransactionSuccess(true);
-      setAmount("");
-      setreceiverAddress("");
+    try {
+      if (!receiverAddress || !amount || isNaN(amount)) {
+        alert("Please enter a valid address and amount.");
+        return;
+      }
+      const hash = await client.sendTransaction({
+        account: address,
+        to: receiverAddress,
+        value: parseEther(amount),
+      });
+      setisPublicTransactionPending(true);
+      const receipt = await waitForTransactionReceipt(client, { hash });
+      if (receipt !== undefined) {
+        setisPublicTransactionPending(false);
+        setisPublicTransactionSuccess(true);
+        setAmount("");
+        setreceiverAddress("");
+      }
+      setTimeout(() => {
+        setisPublicTransactionSuccess(false);
+      }, 5000);
+    } catch (error) {
+      console.log(error);
+      setisPublicPaymentFailed(true);
     }
-    setTimeout(() => {
-      setisPublicTransactionSuccess(false);
-    }, 5000);
   };
 
   return (
@@ -251,6 +261,11 @@ function Dashboard() {
       {isWalboIdPayment ? (
         <div className="payWalboContainer">
           <div className="payWalboHeading">Pay to Walbo ID</div>
+          {isPublicPaymentFailed ? (
+            <div className="transactionFailed">Transaction Failed!</div>
+          ) : (
+            ""
+          )}
           {isPublicTransactionPending ? (
             <div className="transactionPending">
               Transaction Pending... Please Wait!

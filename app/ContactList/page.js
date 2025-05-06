@@ -13,7 +13,7 @@ import { sepolia } from "viem/chains";
 
 function ContactList() {
   //  const searchParams = useSearchParams();
-   
+
   //    const name = searchParams.get("name");
   //    const uid = searchParams.get("uid");
   const router = useRouter();
@@ -60,9 +60,7 @@ function ContactList() {
   const handleCloseAddContactForm = () => {
     setaddContactForm(false);
   };
-    const handleSearch = () => {
-
-    }
+  const handleSearch = () => {};
   const handleSave = () => {};
   useEffect(() => {
     main();
@@ -118,10 +116,15 @@ function ContactList() {
       </div>
       <div className="partition"></div>
       <div className="heading">Contacts</div>
-          <div className="addContactContainer">
-          <div className="searchContact" onClick={handleSearch}>
-            <input type="text" name="search" id="search" placeholder="Seach a Contact"></input>
-        </div> 
+      <div className="addContactContainer">
+        <div className="searchContact" onClick={handleSearch}>
+          <input
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Seach a Contact"
+          ></input>
+        </div>
         <div className="addContact" onClick={handleAddContact}>
           Add Contact
         </div>

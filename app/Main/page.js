@@ -37,11 +37,16 @@ function Main() {
         transport: custom(window.ethereum),
       });
 
-      const [address] = await client.requestAddresses();
-      console.log("Connected wallet address:", address);
-      setTimeout(function () {
-        router.push("/Dashboard");
-      }, 1000);
+      try {
+        const [address] = await client.requestAddresses();
+        console.log("Connected wallet address:", address);
+        setTimeout(function () {
+          router.push(`/Dashboard?wallet=${address}`);
+        }, 1000);
+      } catch (err) {
+        console.error("User rejected MetaMask connection:", err);
+      }
+     
     } else {
       setmetamaskinstalled(false);
     }
