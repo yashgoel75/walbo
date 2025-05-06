@@ -48,10 +48,9 @@ function Main() {
         setisConnecting(false);
         setisConnected(true);
 
-
         // Checks new user
 
-
+        
         setTimeout(function () {
           router.push(`/Dashboard?wallet=${address}`);
         }, 1000);
@@ -71,7 +70,7 @@ function Main() {
       <div className="main-container">
         <div className="flex flex-col">
           <div className="image">
-            <Image src={logo} width={400} alt="Walbo"></Image>
+            <Image src={logo} width={400} alt="Walbo" priority></Image>
           </div>
           <div className="login">
             <div className="SocialLoginContainer">
