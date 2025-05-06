@@ -65,7 +65,15 @@ function ContactList() {
   useEffect(() => {
     main();
   }, []);
-
+  const handleHomeButton = () => {
+    router.push(`/Dashboard`);
+  }
+const handleContactButton = () => {
+    router.push(`/ContactList`);
+  };
+  const handleAccountButton = () => {
+    router.push(`/Account`);
+  };
   return (
     <>
       {addContactForm ? (
@@ -111,10 +119,21 @@ function ContactList() {
         ""
       )}
 
-      <div className="Header">
-        <Image src={logo} width={200} alt="Walbo" />
+      <div className="DashboardHeader">
+              <div>
+                <Image src={logo} width={200} alt="Walbo" priority />
+              </div>
+      
+              <div className="nav">
+                <ul>
+                  <li onClick={handleHomeButton}>HOME</li>
+                  <li onClick={handleContactButton}>CONTACTS</li>
+                  <li onClick={handleAccountButton}>MY ACCOUNT</li>
+                </ul>
+              </div>
       </div>
-      <div className="partition"></div>
+      
+
       <div className="heading">Contacts</div>
       <div className="addContactContainer">
         <div className="searchContact" onClick={handleSearch}>

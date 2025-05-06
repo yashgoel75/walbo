@@ -106,6 +106,9 @@ function Dashboard() {
   const handleContactButton = () => {
     router.push(`/ContactList`);
   };
+  const handleAccountButton = () => {
+    router.push(`/Account`);
+  };
   const [receiverAddress, setreceiverAddress] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -163,7 +166,7 @@ function Dashboard() {
           <ul>
             <li>HOME</li>
             <li onClick={handleContactButton}>CONTACTS</li>
-            <li>MY ACCOUNT</li>
+            <li onClick={handleAccountButton}>MY ACCOUNT</li>
           </ul>
         </div>
       </div>

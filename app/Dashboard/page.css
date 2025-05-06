@@ -24,16 +24,25 @@
 }
 .DashboardHeader .nav ul {
   display: flex;
+  align-items: center;
 }
 .DashboardHeader ul li {
   font-family: "Inter";
   margin: 0px 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
   font-weight: 550;
   font-size: 19px;
   list-style: none;
+  transition: 0.1s ease;
+  height: 50px;
+  color: rgb(63, 62, 62);
 }
-
+.DashboardHeader ul li:hover {
+  border-bottom: 2px solid #ff914d;
+  color: black;
+}
 .AccountRelatedOperations {
   width: 90%;
   display: flex;
