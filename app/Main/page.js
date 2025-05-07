@@ -41,7 +41,7 @@ function Main() {
         chain: sepolia,
         transport: custom(window.ethereum),
       });
-
+  
       try {
         setisRequestRejected(false);
         setisConnecting(true);
@@ -49,12 +49,17 @@ function Main() {
         console.log("Connected wallet address:", address);
         setisConnecting(false);
         setisConnected(true);
-
-        // Checks new user
-
-        setTimeout(function () {
+  
+        // Check if wallet address is already registered
+        const res = await fetch(`/api/users/?walletAddress=${encodeURIComponent(address)}`);
+        const data = await res.json();
+  
+        if (res.ok && data.exists) {
           router.push(`/Dashboard?wallet=${address}`);
-        }, 1000);
+        } else {
+          router.push(`/CreateNewAccount?wallet=${address}`);
+        }
+  
       } catch (err) {
         setisConnecting(false);
         setisRequestRejected(true);
@@ -65,6 +70,7 @@ function Main() {
       setmetamaskinstalled(false);
     }
   };
+  
 
   return (
     <>

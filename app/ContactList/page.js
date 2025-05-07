@@ -55,7 +55,8 @@ function ContactList() {
   };
 
   const handleAddContact = () => {
-    setaddContactForm(true);
+    // setaddContactForm(true);
+    router.push("/CreateNewContact");
   };
   const handleCloseAddContactForm = () => {
     setaddContactForm(false);

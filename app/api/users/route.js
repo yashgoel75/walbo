@@ -1,61 +1,94 @@
-// import { connectToDatabase } from "../../../lib/mongodb.js";
-// import Walbo from "../../../lib/models/Walbo.js";
+import { connectMongoDB } from "@/libs/mongodb";
+import Walbo from "@/models/walbo";
+import { NextResponse } from "next/server";
 
-// // Handle GET request — check if a user exists by walboId or walletAddress
-// export async function GET(req) {
-//   await connectToDatabase();
+// Add a contact to an existing Walbo user
+export async function POST(request) {
+  try {
+    const { walboId, contact } = await request.json();
+    await connectMongoDB();
 
-//   const { searchParams } = new URL(req.url);
-//   const walboId = searchParams.get("walboId");
-//   const walletAddress = searchParams.get("walletAddress");
+    // Validate input
+    if (!walboId || !contact || !contact.name || !contact.publicKey) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
-//   if (!walboId && !walletAddress) {
-//     return new Response(JSON.stringify({ error: "Missing walboId or walletAddress" }), { status: 400 });
-//   }
+    // Update the Walbo document by pushing the contact to the contacts array
+    const updatedWalbo = await Walbo.findOneAndUpdate(
+      { walboId },
+      { $push: { contacts: contact } },
+      { new: true }
+    );
 
-//   const query = { walletAddress: walletAddress };
+    if (!updatedWalbo) {
+      return NextResponse.json(
+        { message: "User not found" },
+        { status: 404 }
+      );
+    }
 
-//   try {
-//     const user = await Walbo.findOne(query);
-//       if (!user) {
-//         console.log("User Not Found")
-//     //   return new Response(JSON.stringify({ exists: false }), { status: 404 });
-//     }
-//     return new Response(JSON.stringify({ exists: true, user }), { status: 200 });
-//   } catch (error) {
-//     console.error("GET Error:", error);
-//     return new Response(JSON.stringify({ error: "Database error" }), { status: 500 });
-//   }
-// }
+    return NextResponse.json(
+      { message: "Contact added successfully!", data: updatedWalbo },
+      { status: 201 }
+    );
+  } catch (error) {
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { message: "Duplicate walboId or walletAddress" },
+        { status: 400 }
+      );
+    }
+    console.error("Error adding contact:", error);
+    return NextResponse.json(
+      { message: "Error adding contact", error: error.message },
+      { status: 500 }
+    );
+  }
+}
 
-// // Handle POST request — create a new Walbo user
-// export async function POST(req) {
-//   await connectToDatabase();
+// Get Walbo user by walboId or walletAddress
+export async function GET(request) {
+  try {
+    await connectMongoDB();
+    const { searchParams } = new URL(request.url);
+    const walboId = searchParams.get("walboId");
+    const walletAddress = searchParams.get("walletAddress");
 
-//   const body = await req.json();
-//   const { walboId, walletAddress, profileName } = body;
+    let walbo;
+    if (walboId) {
+      walbo = await Walbo.findOne({ walboId });
+      return NextResponse.json(
+        {
+          exists: !!walbo,
+          walletAddress: walbo?.walletAddress || "",
+          walboId: walbo?.walboId || "",
+        },
+        { status: 200 }
+      );
+    } else if (walletAddress) {
+      walbo = await Walbo.findOne({ walletAddress });
+      return NextResponse.json(
+        {
+          exists: !!walbo,
+          walletAddress: walbo?.walletAddress || "",
+          walboId: walbo?.walboId || "",
+        },
+        { status: 200 }
+      );
+    }
 
-//   if (!walboId || !walletAddress || !profileName) {
-//     return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
-//   }
-
-//   try {
-//     const newUser = new Walbo({
-//       walboId,
-//       walletAddress: walletAddress.toLowerCase(),
-//       profileName,
-//       contacts: [],
-//     });
-
-//     const savedUser = await newUser.save();
-//     return new Response(JSON.stringify({ success: true, user: savedUser }), { status: 201 });
-//   } catch (error) {
-//     console.error("POST Error:", error);
-
-//     if (error.code === 11000) {
-//       return new Response(JSON.stringify({ error: "User with same ID or address already exists" }), { status: 409 });
-//     }
-
-//     return new Response(JSON.stringify({ error: "Failed to create user" }), { status: 500 });
-//   }
-// }
+    return NextResponse.json(
+      { message: "Missing walboId or walletAddress" },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return NextResponse.json(
+      { message: "Error fetching user", error: error.message },
+      { status: 500 }
+    );
+  }
+}

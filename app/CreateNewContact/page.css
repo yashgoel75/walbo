@@ -154,3 +154,14 @@
           width: 50%;
         }
   }
+
+  .userHaveWalboId {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .line {
+    width: 100%;
+    border: 1px solid rgb(172, 170, 170);
+    margin: 30px 0px;
+  }

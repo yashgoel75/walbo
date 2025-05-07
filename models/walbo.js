@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-import { unique } from 'next/dist/build/utils';
 
 const contactSchema = new mongoose.Schema({
   walboId: {
     type: String,
-    required: true,
+    required: false,
   },
   publicKey: {
     type: String,
@@ -26,16 +25,12 @@ const walboSchema = new mongoose.Schema({
     type: String,
       required: true,
     unique: true,
-    validate: {
-      validator: function(v) {
-        return /^(0x)?[0-9a-fA-F]{40}$/.test(v);
-      },
-      message: 'Invalid wallet address format!',
-    },
-  },
-  profileName: {
-    type: String,
-    required: true,
+    // validate: {
+    //   validator: function(v) {
+    //     return /^(0x)?[0-9a-fA-F]{40}$/.test(v);
+    //   },
+    //   message: 'Invalid wallet address format!',
+    // },
   },
   contacts: [contactSchema],
 });

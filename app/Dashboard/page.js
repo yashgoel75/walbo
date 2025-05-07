@@ -27,6 +27,7 @@ function Dashboard() {
     useState(false);
   const [isPublicTransactionSuccess, setisPublicTransactionSuccess] =
     useState(false);
+  const [walboId, setwalboId] = useState("");
   const router = useRouter();
   // const searchParams = useSearchParams();
   // const name = searchParams.get("name");
@@ -60,6 +61,7 @@ function Dashboard() {
         router.push("/Main");
       }
     }
+
     // else if (typeof uid != "undefined") {
     //   console.log("Hello, Google Account connected:", uid);
     // }
@@ -68,7 +70,19 @@ function Dashboard() {
       router.push("/Main");
     }
   };
+  useEffect(() => {
+    const fetchWalboId = async () => {
+      const res = await fetch(
+        `/api/users?walletAddress=${encodeURIComponent(address)}`
+      );
+      const data = await res.json();
+      setwalboId(data.walboId);
+    };
 
+    if (address) {
+      fetchWalboId();
+    }
+  }, [address]);
   useEffect(() => {
     if (!window.ethereum) return;
 
@@ -167,11 +181,14 @@ function Dashboard() {
             <li>HOME</li>
             <li onClick={handleContactButton}>CONTACTS</li>
             <li onClick={handleAccountButton}>MY ACCOUNT</li>
+            <li>{walboId}</li>
           </ul>
         </div>
       </div>
+      {/* <div className="WalboId">{ walboId }</div> */}
       <div className="AccountRelatedOperations">
         <div className="getBalance">Your Current Balance:</div>
+
         {isVisible ? (
           <div className="balance">
             {balance ? `${balance} SepoliaETH` : "Loading..."}

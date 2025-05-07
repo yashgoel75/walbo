@@ -39,6 +39,15 @@
   height: 50px;
   color: rgb(63, 62, 62);
 }
+.WalboId {
+  display: flex;
+  width: 90%;
+  margin: auto;
+  padding: 12px 10px;
+  font-family: "Inter";
+  font-size: 20px;
+  font-weight: 600;
+}
 .DashboardHeader ul li:hover {
   border-bottom: 2px solid #ff914d;
   color: black;
