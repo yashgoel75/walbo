@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Onest:wght@100..900&display=swap");
+
+.cal-sans-regular {
+  font-family: "Cal Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 100vh;
+  margin: auto;
+  overflow: hidden;
+}
+
+.createNewUserContainer {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    width: 100%;
+    margin: 25px 0px;
+    border: 1px solid rgb(172, 170, 170);
+    padding: 15px 0px;
+    border-radius: 12px;
+    transition: 0.3s ease;
+    align-items: center;
+    height: fit-content;
+  }
+
+.createNewUserHeading {
+    text-align: center;
+    width: 100%;
+    font-family: "Inter";
+    font-weight: 600;
+    font-size: 25px;
+}
+.createNewUserContent {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
+}
+.createNewUserContent .walboIdInput  {
+    display: flex;
+}
+.createNewUserContent .walboIdInput input {
+    border: 1px solid rgb(172, 170, 170);
+    padding: 1px 8px;
+    width: 60%;
+}
+.createNewUserContent .inputPublicKey input {
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    border: 1px solid rgb(172, 170, 170);
+    border-radius: 4px;
+    padding: 1px 8px;
+    
+}
+.createNewUserContent .inputPublicKey {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    justify-content:flex-start;
+    
+}
+.createNewUserContent .input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 60%;
+}
+svg {
+    padding: 0px 2px;
+    border: 1px solid rgb(172, 170, 170);
+    border-radius: 4px 0px 0px 4px;
+}
+.createNewUserContent button {
+    width: 40%;
+    border: 1px solid rgb(172, 170, 170);
+    border-radius: 0px 4px 4px 0px;
+    padding: 1px 3px;
+    background-color: rgb(172, 170, 170);
+    transition: 0.2s ease;
+}
+.createNewUserContent button:hover {
+    cursor: pointer;
+}
+
+.installMetaMask {
+   
+    background-color: rgba(228, 60, 60, 0.822);
+
+    color: rgb(104, 1, 1);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-family: "Cal Sans";
+    padding: 5px 10px;
+    margin: 8px 0px 0px 0px;
+    font-weight: 500;
+    border-radius: 6px;
+  }
+  .connected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(14, 158, 50, 0.885);
+    font-size: 18px;
+    font-family: "Cal Sans";
+    padding: 5px 10px;
+    margin: 8px 0px 0px 0px;
+    font-weight: 500;
+    color: rgb(3, 69, 9);
+    border-radius: 6px;
+  }
+
+  #disabledCreateAccount {
+    background-color: gray;
+    padding: 2px 12px;
+    margin: 20px 0px 8px 0px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  #createAccount {
+    background-color: darkgray;
+    padding: 2px 12px;
+    margin: 20px 0px 8px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        margin: auto;
+        overflow: hidden;
+      }
+      
+      .createNewUserContainer {
+          width: 60%;
+        }
+  }
