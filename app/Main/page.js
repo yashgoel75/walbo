@@ -67,7 +67,7 @@ function Main() {
         console.error("User rejected MetaMask connection:", err);
       }
     } else {
-      setmetamaskinstalled(false);
+      metamaskinstalled(false);
     }
   };
   
@@ -75,53 +75,32 @@ function Main() {
   return (
     <>
       <div className="main-container">
-        <div className="flex flex-col">
-          <div className="image">
-            <Image src={logo} width={400} alt="Walbo" priority></Image>
-          </div>
-          <div className="login">
-            <div className="SocialLoginContainer">
-              {/* <div className="SocialLogin">
-                <div className="Image">
-                  <Image src={google} width={70} alt="Google"></Image>
-                </div>
-                <div className="content" onClick={handleGoogleLogin}>
-                  Continue with Google
-                </div>
-              </div> */}
-
-              {signInWithMetaMask ? (
-                <div className="SocialLogin" onClick={handleMetaMaskLogin}>
-                  <div className="Image">
-                    <Image src={metamask} width={35} alt="MetaMask"></Image>
-                  </div>
-                  <div className="content">Continue with MetaMask</div>
-                </div>
-              ) : (
-                ""
-              )}
-              {metamaskinstalled ? (
-                ""
-              ) : (
-                <div className="installMetaMask">
-                  Please install MetaMask in your browser!
-                </div>
-              )}
-              {isConnecting ? (
-                <div className="connecting">Connecting... Please Wait!</div>
-              ) : (
-                ""
-              )}
-              {isConnected ? <div className="connected">Connected!</div> : ""}
-              {isRequestRejected ? (
-                <div className="installMetaMask">Request Rejected</div>
-              ) : (
-                ""
-              )}
+      <div className="image">
+        <Image src={logo} alt="Walbo" priority className="logo" />
+      </div>
+      <div className="login">
+        <div className="social-login-container">
+          <div
+            className="social-login"
+            onClick={handleMetaMaskLogin}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && handleMetaMaskLogin()}
+          >
+            <div className="social-login-image">
+              <Image src={metamask} alt="MetaMask" className="social-icon" />
             </div>
+            <div className="social-login-content">Continue with MetaMask</div>
           </div>
+          {!metamaskinstalled && (
+            <div className="error-message">Please install MetaMask in your browser!</div>
+          )}
+          {isConnecting && <div className="status-message connecting">Connecting... Please Wait!</div>}
+          {isConnected && <div className="status-message connected">Connected!</div>}
+          {isRequestRejected && <div className="error-message">Request Rejected</div>}
         </div>
       </div>
+    </div>
     </>
   );
 }
