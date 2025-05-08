@@ -63,7 +63,7 @@ function Main() {
       } catch (err) {
         setisConnecting(false);
         setisRequestRejected(true);
-        setTimeout(() => setisRequestRejected(false), 3000);
+        setTimeout(() => setisRequestRejected(false), 1000);
         console.error("User rejected MetaMask connection:", err);
       }
     } else {
