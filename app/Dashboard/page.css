@@ -22,23 +22,26 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .DashboardHeader .nav ul {
   display: flex;
   align-items: center;
 }
+
 .DashboardHeader ul li {
   font-family: "Inter";
-  margin: 0px 10px;
+  margin: 0px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-weight: 550;
-  font-size: 19px;
+  font-weight: 500;
+  font-size: 22px;
   list-style: none;
   transition: 0.1s ease;
   height: 50px;
   color: rgb(63, 62, 62);
 }
+
 .WalboId {
   display: flex;
   width: 90%;
@@ -48,10 +51,12 @@
   font-size: 20px;
   font-weight: 600;
 }
+
 .DashboardHeader ul li:hover {
   border-bottom: 2px solid #ff914d;
   color: black;
 }
+
 .AccountRelatedOperations {
   width: 90%;
   display: flex;
@@ -59,6 +64,7 @@
   padding: 2px 5px;
   align-items: center;
 }
+
 .AccountRelatedOperations .getBalance {
   display: flex;
   padding: 2px 5px;
@@ -66,6 +72,7 @@
   font-size: 20px;
   font-weight: 600;
 }
+
 .AccountRelatedOperations .balance {
   display: flex;
   padding: 2px 5px;
@@ -73,6 +80,7 @@
   font-size: 20px;
   font-weight: 400;
 }
+
 .paymentOptions {
   width: 90%;
   display: flex;
@@ -82,6 +90,7 @@
   transition: 0.3s ease;
   font-family: "Inter";
 }
+
 .paymentOption {
   display: flex;
   flex-direction: column;
@@ -91,118 +100,19 @@
   margin: 0px 20px;
   cursor: pointer;
 }
+
 .paymentOption .paymentImage {
   display: flex;
   align-items: center;
   height: 70px;
 }
+
 .paymentOption:hover {
   transform: scale(1.1);
 }
-.payWalboContainer {
-  width: 90%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  padding: 5px 20px;
-  align-items: center;
-  border: 1px solid rgba(188, 188, 188, 0.61);
-  border-radius: 8px;
-}
-.payWalboHeading {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 600;
-  text-align: left;
-}
 
-.payWalboContent {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  width: 100%;
-  text-align: left;
-}
-.payWalboContent input {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  padding: 1px 10px;
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(174, 174, 174, 0.558);
-}
-.payWalboContent button {
-  font-family: "Inter";
-  font-size: 18px;
-  width: fit-content;
-  display: flex;
-  margin: auto;
-  padding: 2px 5px;
-  border-radius: 4px;
-  
-  background-color: rgba(141, 141, 141, 0.672);
-  transition: 0.3s ease;
-}
-.payWalboContent button:hover {
-  cursor: pointer;
-}
-
-.payContactsContainer {
-  width: 90%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  padding: 5px 20px;
-  align-items: center;
-  border: 1px solid rgba(188, 188, 188, 0.61);
-  border-radius: 8px;
-}
-.payContactsHeading {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.payContactContent {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  width: 100%;
-  text-align: left;
-}
-.payContactContent input {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  padding: 1px 10px;
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(174, 174, 174, 0.558);
-}
-.payContactContent button {
-  font-family: "Inter";
-  font-size: 18px;
-  width: fit-content;
-  display: flex;
-  margin: auto;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background-color: rgba(141, 141, 141, 0.672);
-  transition: 0.3s ease;
-}
-.payContactContent button:hover {
-  transform: scale(1.1);
-  cursor: pointer;
-}
-
+.payWalboContainer,
+.payContactsContainer,
 .payPublicContainer {
   width: 90%;
   height: 100%;
@@ -214,18 +124,18 @@
   border: 1px solid rgba(188, 188, 188, 0.61);
   border-radius: 8px;
 }
+
+.payWalboHeading,
+.payContactsHeading,
 .payPublicKeyHeading {
   font-family: "Inter";
   font-size: 18px;
   font-weight: 600;
   text-align: left;
 }
-.partition {
-  width: 90%;
-  margin: auto;
-  border: 1px solid rgba(174, 174, 174, 0.558);
-  border-radius: 50%;
-}
+
+.payWalboContent,
+.payContactContent,
 .payPublicKeyContent {
   font-family: "Inter";
   font-size: 18px;
@@ -234,6 +144,9 @@
   width: 100%;
   text-align: left;
 }
+
+.payWalboContent input,
+.payContactContent input,
 .payPublicKeyContent input {
   font-family: "Inter";
   font-size: 18px;
@@ -244,92 +157,178 @@
   text-align: left;
   border: 1px solid rgba(174, 174, 174, 0.558);
 }
-.payPublicKeyContent button {
-  font-family: "Inter";
-  font-size: 18px;
-  width: fit-content;
-  display: flex;
-  margin: auto;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background-color: rgba(141, 141, 141, 0.672);
-  transition: 0.3s ease;
-}
-.payPublicKeyContent button:hover {
-  cursor: pointer;
-}
-.transactionFailed {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(228, 60, 60, 0.822);
-  font-size: 18px;
-  font-family: "Cal Sans";
-  color: rgb(104, 1, 1);
-  height: 40px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  margin: 15px 0px;
-}
-.transactionSuccess {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(14, 158, 50, 0.885);
-  font-size: 18px;
-  font-family: "Inter";
-  padding: 5px 10px;
-  margin: 8px 0px 0px 0px;
-  font-weight: 500;
-  color: rgb(3, 69, 9);
-  border-radius: 6px;
-  margin: 15px 0px;
-}
+
+.transactionFailed,
+.transactionSuccess,
 .transactionPending {
-  background-color: rgba(153, 143, 6, 0.885);
-  color: rgb(86, 81, 4);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-family: "Inter";
   padding: 5px 10px;
-  margin: 8px 0px 0px 0px;
   font-weight: 500;
   border-radius: 6px;
   margin: 15px 0px;
 }
 
+.transactionFailed {
+  background-color: rgba(228, 60, 60, 0.822);
+  color: #680101;
+}
+
+.transactionSuccess {
+  background-color: rgba(14, 158, 50, 0.885);
+  color: #034509;
+}
+
+.transactionPending {
+  background-color: rgba(153, 143, 6, 0.885);
+  color: rgb(86, 81, 4);
+}
 
 .walboIdInputs {
   display: flex;
 }
+
 .walboIdInputs svg {
   padding: 3px 3px;
-    border: 1px solid rgb(172, 170, 170);
-    border-radius: 4px 0px 0px 4px;
+  border: 1px solid rgb(172, 170, 170);
+  border-radius: 4px 0px 0px 4px;
 }
+
 .walboIdInputs input {
   border: 1px solid rgb(172, 170, 170);
   padding: 1px 8px;
-  width: 60%;
+  width: 85%;
   display: flex;
-    margin: 0;
-    justify-content: center;
-    border: 1px solid rgb(172, 170, 170);
-    border-radius: 0px;
-    padding: 1px 8px;
+  margin: 0;
+  justify-content: center;
+  border-radius: 0px;
 }
+
 .walboIdInputs .button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40%;
+  width: 15%;
   height: 40px;
-  border: 1px solid rgb(172, 170, 170);
+  border: 1px solid rgb(255, 195, 14);
   border-radius: 0px 4px 4px 0px;
   padding: 1px 3px;
-  background-color: rgb(172, 170, 170);
+  background-color: rgb(255, 195, 14);
   transition: 0.2s ease;
   text-align: center;
+}
+
+.selectContact {
+  margin: 0px 20px 0px 0px;
+}
+
+.logo {
+  width: 200px;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+}
+
+/* Hamburger Menu Styles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1000;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background-color: #3f3e3e;
+  transition: all 0.3s ease;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .DashboardHeader {
+    padding: 10px 15px;
+    position: relative;
+    width: 100%;
+  }
+
+  .logo {
+    width: 150px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid rgba(188, 188, 188, 0.61);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+
+  .nav.active {
+    display: block;
+  }
+
+  .nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .nav ul li {
+    width: 100%;
+    margin: 0;
+    padding: 10px 15px;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(188, 188, 188, 0.3);
+    height: auto;
+    color: #3f3e3e;
+  }
+
+  .nav ul li:hover,
+  .nav ul li:active {
+    background-color: #f8f8f8;
+    color: #000;
+  }
+
+  .nav ul li:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .DashboardHeader {
+    padding: 8px 10px;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .nav ul li {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+}
+.verifiedCheckMark .errorMark {
+  margin-right: 5px;
 }

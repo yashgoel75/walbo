@@ -1,7 +1,14 @@
 "use client";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import logo from "../../public/WalboLogo.png";
+import "./page.css";
+
 import {
   createWalletClient,
   createPublicClient,
@@ -11,14 +18,12 @@ import {
 } from "viem";
 import { sepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
-import Image from "next/image";
-import logo from "../../public/WalboLogo.png";
-import "./page.css";
 
 function Dashboard() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [address, setAddress] = useState(undefined);
   const [isVisible, setIsVisible] = useState(false);
-  const [isWalboIdPayment, setIsWalboIdPayment] = useState(false);
+  const [isWalboIdPayment, setIsWalboIdPayment] = useState(true);
   const [isContactsPayment, setIsContactsPayment] = useState(false);
   const [isPublicPayment, setIsPublicPayment] = useState(false);
   const [isPublicPaymentFailed, setIsPublicPaymentFailed] = useState(false);
@@ -36,6 +41,8 @@ function Dashboard() {
   const [contactWalletAddress, setContactWalletAddress] = useState("");
   const [isAvailable, setIsAvailable] = useState(false);
   const [isAvailableIsVisible, setIsAvailableIsVisible] = useState(false);
+  const [isRequestRejected, setisRequestRejected] = useState(false);
+
   const router = useRouter();
 
   const main = async () => {
@@ -186,7 +193,6 @@ function Dashboard() {
 
     const [address] = await client.getAddresses();
     try {
-      // Validate inputs
       if (!receiverAddress || !/^(0x)?[0-9a-fA-F]{40}$/.test(receiverAddress)) {
         alert("Please enter a valid Ethereum address.");
         return;
@@ -216,32 +222,61 @@ function Dashboard() {
         setContactWalletAddress("");
         setIsAvailableIsVisible(false);
         setSelectedContact("");
-        await getBalance(address); // Refresh balance
+        await getBalance(address);
       }
       setTimeout(() => {
         setIsPublicTransactionSuccess(false);
       }, 5000);
     } catch (error) {
       console.error("Transaction error:", error);
-      setIsPublicPaymentFailed(true);
-      alert("Transaction failed: " + error.message);
+      console.log("Transaction failed: " + error.message);
+      setisRequestRejected(true);
+      setTimeout(() => setisRequestRejected(false), 3000);
     }
   };
 
   return (
     <>
       <div className="DashboardHeader">
-        <div>
-          <Image src={logo} width={200} alt="Walbo" priority />
+        <div className="logo">
+          <Image src={logo} alt="Walbo" priority />
         </div>
-        <div className="nav">
+        <button
+          className="hamburger"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle navigation"
+          aria-expanded={isMenuOpen}
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+        <div className={`nav ${isMenuOpen ? "active" : ""}`}>
           <ul>
-            <li>HOME</li>
-            <li onClick={handleContactButton}>CONTACTS</li>
-            <li onClick={handleAccountButton}>MY ACCOUNT</li>
-            <li>{walboId || "Loading..."}</li>
+            <li onClick={() => setIsMenuOpen(false)}>Home</li>
+            <li
+              onClick={() => {
+                handleContactButton();
+                setIsMenuOpen(false);
+              }}
+            >
+              Contacts
+            </li>
+            <li
+              onClick={() => {
+                handleAccountButton();
+                setIsMenuOpen(false);
+              }}
+            >
+              Account
+            </li>
           </ul>
         </div>
+      </div>
+      <br></br>
+      <div className="AccountRelatedOperations">
+        <div className="getBalance">Welcome,</div>
+        <div className="balance">{walboId || "Loading..."}</div>
       </div>
       <div className="AccountRelatedOperations">
         <div className="getBalance">Your Current Balance:</div>
@@ -349,7 +384,6 @@ function Dashboard() {
           <div className="paymentName">Pay Public Key</div>
         </div>
       </div>
-
       {isWalboIdPayment && (
         <div className="payWalboContainer">
           <div className="payWalboHeading">Pay to Walbo ID</div>
@@ -360,6 +394,9 @@ function Dashboard() {
             <div className="transactionPending">
               Transaction Pending... Please Wait!
             </div>
+          )}
+          {isRequestRejected && (
+            <div className="transactionFailed">Request Rejected</div>
           )}
           {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
@@ -387,6 +424,36 @@ function Dashboard() {
                 Verify
               </button>
             </div>
+            {isAvailableIsVisible &&
+              (isAvailable ? (
+                <div className="transactionFailed">
+                  <svg
+                    className="errorMark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#680101"
+                  >
+                    <path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" />
+                  </svg>
+                  Walbo ID Invalid!{" "}
+                </div>
+              ) : (
+                <div className="transactionSuccess">
+                  <svg
+                    className="verifiedCheckMark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#034509"
+                  >
+                    <path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z" />
+                  </svg>
+                  Verified{" "}
+                </div>
+              ))}
             <label htmlFor="publicKey">Receiver's Public Key:</label>
             <input
               id="publicKey"
@@ -404,14 +471,10 @@ function Dashboard() {
               value={amount}
               onChange={handleAmountChange}
             />
-            {isAvailableIsVisible &&
-              (isAvailable ? (
-                <div className="transactionFailed">Walbo ID Invalid!</div>
-              ) : (
-                <div className="transactionSuccess">Verified</div>
-              ))}
-            <button onClick={handleSendTransaction}>Send Transaction</button>
-            
+
+            <button className="btn btn-warning" onClick={handleSendTransaction}>
+              Send Transaction
+            </button>
           </div>
         </div>
       )}
@@ -431,7 +494,9 @@ function Dashboard() {
             <div className="transactionSuccess">Transaction Successful!</div>
           )}
           <div className="payContactContent">
-            <label htmlFor="contact">Select a Contact:</label>
+            <label className="selectContact" htmlFor="contact">
+              <strong>Select a Contact:</strong>
+            </label>
             <select
               id="contact"
               name="contact"
@@ -445,6 +510,9 @@ function Dashboard() {
                 </option>
               ))}
             </select>
+
+            <br></br>
+            <br></br>
             <label htmlFor="publicKey">Contact's Wallet Address:</label>
             <input
               id="publicKey"
@@ -462,7 +530,9 @@ function Dashboard() {
               value={amount}
               onChange={handleAmountChange}
             />
-            <button onClick={handleSendTransaction}>Send Transaction</button>
+            <button className="btn btn-warning" onClick={handleSendTransaction}>
+              Send Transaction
+            </button>
           </div>
         </div>
       )}
@@ -498,10 +568,13 @@ function Dashboard() {
               value={amount}
               onChange={handleAmountChange}
             />
-            <button onClick={handleSendTransaction}>Send Transaction</button>
+            <button className="btn btn-warning" onClick={handleSendTransaction}>
+              Send Transaction
+            </button>
           </div>
         </div>
       )}
+      <br></br>
     </>
   );
 }

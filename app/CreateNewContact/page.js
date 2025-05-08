@@ -13,6 +13,7 @@ import { sepolia } from "viem/chains";
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
 import "./page.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Account() {
   const [address, setAddress] = useState("");
@@ -56,7 +57,7 @@ function Account() {
     try {
       const res = await fetch("/api/users", {
         method: "POST",
-         headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           walboId, // Current user's walboId
           contact: {
@@ -70,6 +71,7 @@ function Account() {
       const data = await res.json();
       if (res.ok) {
         alert("Contact added successfully!");
+        router.push("/ContactList");
         setName("");
         setPublicKey("");
         setContactWalboId("");
@@ -185,7 +187,9 @@ function Account() {
                 value={contactWalboId}
                 onChange={(e) => setContactWalboId(e.target.value)}
               />
-              <button onClick={getDetails}>Verify</button>
+              <button className="button" onClick={getDetails}>
+                Verify
+              </button>
             </div>
             <div className="line"></div>
           </div>
@@ -201,17 +205,28 @@ function Account() {
             />
             <br />
             <label htmlFor="publicKey">Receiver's Wallet Address</label>
-            <input
-              className="focus:outline-1"
-              id="publicKey"
-              name="publicKey"
-              value={publicKey}
-              onChange={(e) => setPublicKey(e.target.value)}
-              placeholder={contactWalletAddress || "Enter wallet address"}
-            />
+            {publicKey === "" ? (
+              <input
+                className="focus:outline-1"
+                id="publicKey"
+                name="publicKey"
+                value={publicKey}
+                onChange={(e) => setPublicKey(e.target.value)}
+                placeholder={contactWalletAddress || "Enter wallet address"}
+              />
+            ) : (
+              <input
+                className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
+                disabled
+                id="publicKey"
+                name="publicKey"
+                value={publicKey}
+                onChange={(e) => setPublicKey(e.target.value)}
+                placeholder={contactWalletAddress || "Enter wallet address"}
+              />
+            )}
           </div>
 
-          <br />
 
           {isAvailableIsVisible &&
             (isAvailable ? (
@@ -221,7 +236,9 @@ function Account() {
             ))}
         </div>
 
-        <button onClick={handleAccountCreation}>Save Contact</button>
+        <button className="btn btn-warning mt-3 mb-2" onClick={handleAccountCreation}>
+          Save Contact
+        </button>
       </div>
     </div>
   );

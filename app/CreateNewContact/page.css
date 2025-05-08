@@ -51,7 +51,7 @@
 .createNewUserContent .walboIdInput input {
     border: 1px solid rgb(172, 170, 170);
     padding: 1px 8px;
-    width: 60%;
+    width: 80%;
 }
 .createNewUserContent .inputPublicKey input {
     display: flex;
@@ -73,19 +73,18 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 60%;
+    width: 90%;
 }
 .createNewUserContent svg {
     padding: 3px 3px;
     border: 1px solid rgb(172, 170, 170);
     border-radius: 4px 0px 0px 4px;
 }
-.createNewUserContent button {
-    width: 40%;
-    border: 1px solid rgb(172, 170, 170);
+.createNewUserContent .button {
+    width: 20%;
     border-radius: 0px 4px 4px 0px;
     padding: 1px 3px;
-    background-color: rgb(172, 170, 170);
+    background-color: rgb(255, 195, 14);
     transition: 0.2s ease;
 }
 .createNewUserContent button:hover {

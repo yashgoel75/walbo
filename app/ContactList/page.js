@@ -1,24 +1,25 @@
 "use client";
 
-import mongoose, { Schema, model } from "mongoose";
-
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createWalletClient, custom } from "viem";
+import { sepolia } from "viem/chains";
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
 import "./page.css";
-import { useRouter, useSearchParams } from "next/navigation";
-
-import { createWalletClient, custom } from "viem";
-import { sepolia } from "viem/chains";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function ContactList() {
-  //  const searchParams = useSearchParams();
-
-  //    const name = searchParams.get("name");
-  //    const uid = searchParams.get("uid");
   const router = useRouter();
-  const [address, setaddress] = useState("");
-  const [addContactForm, setaddContactForm] = useState(false);
+  const [address, setAddress] = useState("");
+  const [walboId, setWalboId] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [editContact, setEditContact] = useState(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [ContactCount, setContactCount] = useState(0);
+
   const main = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
@@ -28,15 +29,10 @@ function ContactList() {
         });
 
         const [address] = await client.getAddresses();
-
-        if (typeof address !== "undefined") {
-          console.log("Hello, wallet connected:", address);
-          setaddress(address);
-        }
-        // else if (typeof uid != "undefined") {
-        //   console.log("Hello, Google Account connected:", uid);
-        // }
-        else {
+        if (address) {
+          console.log("Wallet connected:", address);
+          setAddress(address);
+        } else {
           console.log("No address found. Redirecting...");
           router.push("/Main");
         }
@@ -44,110 +40,285 @@ function ContactList() {
         console.error("Error accessing wallet:", error);
         router.push("/Main");
       }
-    }
-    // else if (typeof uid != "undefined") {
-    //   console.log("Hello, Google Account connected:", uid);
-    // }
-    else {
+    } else {
       console.log("MetaMask not found. Redirecting...");
       router.push("/Main");
     }
   };
 
-  const handleAddContact = () => {
-    // setaddContactForm(true);
-    router.push("/CreateNewContact");
+  const fetchWalboIdAndContacts = async () => {
+    try {
+      const res = await fetch(
+        `/api/users?walletAddress=${encodeURIComponent(address)}`
+      );
+      const data = await res.json();
+    
+
+      if (data.exists) {
+        setContactCount(data.contacts.length);
+        console.log(data.contacts);
+        console.log(data.contacts.length);
+        setWalboId(data.walboId);
+        setContacts(data.contacts || []);
+        setFilteredContacts(data.contacts || []);
+      } else {
+        alert("No Walbo account found. Please create an account.");
+        router.push("/create-user");
+      }
+    } catch (err) {
+      console.error("Error fetching contacts:", err);
+      alert("Failed to load contacts. Please try again.");
+      router.push("/Main");
+    }
   };
-  const handleCloseAddContactForm = () => {
-    setaddContactForm(false);
-  };
-  const handleSearch = () => {};
-  const handleSave = () => {};
+
+  useEffect(() => {
+    if (address) {
+      fetchWalboIdAndContacts();
+    }
+  }, [address]);
+
   useEffect(() => {
     main();
   }, []);
+
+  useEffect(() => {
+    if (!window.ethereum) return;
+    const handleAccountsChanged = (accounts) => {
+      if (accounts.length === 0) {
+        router.push("/Main");
+      }
+    };
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
+    return () => {
+      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+    };
+  }, []);
+
   const handleHomeButton = () => {
-    router.push(`/Dashboard`);
-  }
-const handleContactButton = () => {
-    router.push(`/ContactList`);
+    router.push("/Dashboard");
   };
+
+  const handleContactButton = () => {
+
+  };
+
   const handleAccountButton = () => {
-    router.push(`/Account`);
+    router.push("/Account");
   };
+
+  const handleAddContact = () => {
+    router.push("/CreateNewContact");
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(query) || 
+      contact.walboId.toLowerCase().includes(query)
+    );
+    setFilteredContacts(filtered);
+  };
+
+  const handleEditContact = (contact) => {
+    setEditContact({ ...contact });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editContact.name.trim()) {
+      alert("Please enter a contact name.");
+      return;
+    }
+    if (!editContact.publicKey.trim() || !/^(0x)?[0-9a-fA-F]{40}$/.test(editContact.publicKey)) {
+      alert("Please enter a valid wallet address.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walboId,
+          contactId: editContact._id,
+          updatedContact: {
+            name: editContact.name,
+            publicKey: editContact.publicKey,
+            walboId: editContact.walboId || undefined,
+          },
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Contact updated successfully!");
+        setEditContact(null);
+        await fetchWalboIdAndContacts();
+      } else {
+        alert(data.message || "Failed to update contact.");
+      }
+    } catch (err) {
+      console.error("Error updating contact:", err);
+      alert("Failed to update contact. Please try again.");
+    }
+  };
+
+  const handleDeleteContact = async (contactId) => {
+    if (!confirm("Are you sure you want to delete this contact?")) return;
+
+    try {
+      const res = await fetch("/api/users", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walboId, contactId }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Contact deleted successfully!");
+        await fetchWalboIdAndContacts();
+      } else {
+        alert(data.message || "Failed to delete contact.");
+      }
+    } catch (err) {
+      console.error("Error deleting contact:", err);
+      alert("Failed to delete contact. Please try again.");
+    }
+  };
+
   return (
     <>
-      {addContactForm ? (
-        <div className="addContactFormContainer">
-          <div className="addContactForm">
-            <div className="contactFormHeader">
-              <div className="closeButton">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="40px"
-                  viewBox="0 -960 960 960"
-                  width="40px"
-                  fill="#000000"
-                  onClick={handleCloseAddContactForm}
-                >
-                  <path d="m251.33-204.67-46.66-46.66L433.33-480 204.67-708.67l46.66-46.66L480-526.67l228.67-228.66 46.66 46.66L526.67-480l228.66 228.67-46.66 46.66L480-433.33 251.33-204.67Z" />
-                </svg>
-              </div>
-              <div className="ContactFormHeading">Add New Contact</div>
-            </div>
-            <div className="ContactFormForm">
-              <label htmlFor="name">Enter the Name:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Alice"
-              ></input>
-              <label htmlFor="publicKey">Enter the Public Key:</label>
-              <input
-                type="text"
-                id="publicKey"
-                name="publicKey"
-                placeholder="0x..."
-              ></input>
-              <button id="saveContact" onClick={handleSave}>
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
-
       <div className="DashboardHeader">
-              <div>
-                <Image src={logo} width={200} alt="Walbo" priority />
+              <div className="logo">
+                <Image src={logo} alt="Walbo" priority />
               </div>
-      
-              <div className="nav">
+              <button
+                className="hamburger"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle navigation"
+                aria-expanded={isMenuOpen}
+              >
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+              </button>
+              <div className={`nav ${isMenuOpen ? "active" : ""}`}>
                 <ul>
-                  <li onClick={handleHomeButton}>HOME</li>
-                  <li onClick={handleContactButton}>CONTACTS</li>
-                  <li onClick={handleAccountButton}>MY ACCOUNT</li>
+            <li onClick={() => { handleHomeButton(); setIsMenuOpen(false) }}>Home</li>
+                  <li
+                    onClick={() => {
+                      handleContactButton();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+              Contacts
+                  </li>
+                  <li
+                    onClick={() => {
+                      handleAccountButton();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Account
+                  </li>
                 </ul>
               </div>
-      </div>
-      
+            </div>
+            <br></br>
 
-      <div className="heading">Contacts</div>
-      <div className="addContactContainer">
-        <div className="searchContact" onClick={handleSearch}>
+      <div className="heading container">Contacts <span className="contactcount">({ContactCount})</span></div>
+        <div className="input-group mt-3 container">
           <input
+            className="form-control"
             type="text"
             name="search"
             id="search"
-            placeholder="Seach a Contact"
-          ></input>
+            placeholder="Search a Contact by Name or Walbo ID"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        <div className="input-group-text btn btn-dark" onClick={handleAddContact}>
+          Add New Contact
         </div>
-        <div className="addContact" onClick={handleAddContact}>
-          Add Contact
-        </div>
+      </div>
+      <br></br>
+      
+      <div className="container">
+        {filteredContacts.length > 0 ? (
+          <table className="table table-hover container">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Public Key</th>
+                <th scope="col">Walbo ID</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredContacts.map((contact) => (
+                <tr key={contact._id}>
+                  <td>
+                    {editContact && editContact._id === contact._id ? (
+                      <input
+                        type="text"
+                        value={editContact.name}
+                        onChange={(e) =>
+                          setEditContact({ ...editContact, name: e.target.value })
+                        }
+                      />
+                    ) : (
+                      contact.name
+                    )}
+                  </td>
+                  <td>
+                    {editContact && editContact._id === contact._id ? (
+                      <input
+                        type="text"
+                        value={editContact.publicKey}
+                        onChange={(e) =>
+                          setEditContact({ ...editContact, publicKey: e.target.value })
+                        }
+                      />
+                    ) : (
+                      contact.publicKey
+                    )}
+                  </td>
+                  <td>
+                    {editContact && editContact._id === contact._id ? (
+                      <input
+                        type="text"
+                        value={editContact.walboId || ""}
+                        onChange={(e) =>
+                          setEditContact({ ...editContact, walboId: e.target.value })
+                        }
+                      />
+                    ) : (
+                      contact.walboId || "-"
+                    )}
+                  </td>
+                  <td>
+                    {editContact && editContact._id === contact._id ? (
+                      <div className="edit btn-group">
+                        <button className="btn btn-outline-primary" onClick={handleSaveEdit}>Save</button>
+                        <button className="btn btn-outline-danger" onClick={() => setEditContact(null)}>Cancel</button>
+                      </div>
+                    ) : (
+                        <div className="btn-group">
+                        <button className="btn btn-outline-primary" onClick={() => handleEditContact(contact)}>Edit</button>
+                        <button className="btn btn-outline-danger" onClick={() => handleDeleteContact(contact._id)}>
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="noContacts">No contacts found.</div>
+        )}
       </div>
     </>
   );

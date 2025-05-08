@@ -19,6 +19,7 @@ import "./page.css";
 
 function Account() {
   const [address, setaddress] = useState(undefined);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const router = useRouter();
   const main = async () => {
@@ -99,18 +100,41 @@ function Account() {
   return (
     <>
       <div className="DashboardHeader">
-        <div>
-          <Image src={logo} width={200} alt="Walbo" priority />
-        </div>
-
-        <div className="nav">
-          <ul>
-            <li onClick={handleHomeButton}>HOME</li>
-            <li onClick={handleContactButton}>CONTACTS</li>
-            <li>MY ACCOUNT</li>
-          </ul>
-        </div>
-      </div>
+                    <div className="logo">
+                      <Image src={logo} alt="Walbo" priority />
+                    </div>
+                    <button
+                      className="hamburger"
+                      onClick={() => setIsMenuOpen(!isMenuOpen)}
+                      aria-label="Toggle navigation"
+                      aria-expanded={isMenuOpen}
+                    >
+                      <span className="hamburger-line"></span>
+                      <span className="hamburger-line"></span>
+                      <span className="hamburger-line"></span>
+                    </button>
+                    <div className={`nav ${isMenuOpen ? "active" : ""}`}>
+                      <ul>
+                  <li onClick={() => { handleHomeButton(); setIsMenuOpen(false) }}>Home</li>
+                        <li
+                          onClick={() => {
+                            handleContactButton();
+                            setIsMenuOpen(false);
+                          }}
+                        >
+                          Contacts
+                        </li>
+                        <li
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                          }}
+                        >
+                          Account
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <br></br>
     </>
   );
 }
