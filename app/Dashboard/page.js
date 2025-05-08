@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   createWalletClient,
   createPublicClient,
@@ -11,29 +11,33 @@ import {
 } from "viem";
 import { sepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
-
 import Image from "next/image";
 import logo from "../../public/WalboLogo.png";
 import "./page.css";
 
 function Dashboard() {
-  const [address, setaddress] = useState(undefined);
-  const [isVisible, setisVisible] = useState(false);
-  const [isWalboIdPayment, setisWalboIdPayment] = useState(false);
-  const [isContactsPayment, setisContactsPayment] = useState(false);
-  const [isPublicPayment, setisPublicPayment] = useState(false);
-  const [isPublicPaymentFailed, setisPublicPaymentFailed] = useState(false);
-  const [isPublicTransactionPending, setisPublicTransactionPending] =
+  const [address, setAddress] = useState(undefined);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isWalboIdPayment, setIsWalboIdPayment] = useState(false);
+  const [isContactsPayment, setIsContactsPayment] = useState(false);
+  const [isPublicPayment, setIsPublicPayment] = useState(false);
+  const [isPublicPaymentFailed, setIsPublicPaymentFailed] = useState(false);
+  const [isPublicTransactionPending, setIsPublicTransactionPending] =
     useState(false);
-  const [isPublicTransactionSuccess, setisPublicTransactionSuccess] =
+  const [isPublicTransactionSuccess, setIsPublicTransactionSuccess] =
     useState(false);
-  const [walboId, setwalboId] = useState("");
+  const [walboId, setWalboId] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState("");
+  const [receiverAddress, setReceiverAddress] = useState("");
+  const [amount, setAmount] = useState("");
+  const [balance, setBalance] = useState(null);
+  const [contactWalboId, setContactWalboId] = useState("");
+  const [contactWalletAddress, setContactWalletAddress] = useState("");
+  const [isAvailable, setIsAvailable] = useState(false);
+  const [isAvailableIsVisible, setIsAvailableIsVisible] = useState(false);
   const router = useRouter();
-  // const searchParams = useSearchParams();
-  // const name = searchParams.get("name");
-  // const uid = searchParams.get("uid");
-  // const query = `?uid=${uid}&name=${name}`;
-  // console.log({ name, uid });
+
   const main = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
@@ -46,13 +50,9 @@ function Dashboard() {
 
         if (typeof address !== "undefined") {
           console.log("Hello, wallet connected:", address);
-          setaddress(address);
+          setAddress(address);
           await getBalance(address);
-        }
-        // else if (typeof uid != "undefined") {
-        //   console.log("Hello, Google Account connected:", uid);
-        // }
-        else {
+        } else {
           console.log("No address found. Redirecting...");
           router.push("/Main");
         }
@@ -60,29 +60,50 @@ function Dashboard() {
         console.error("Error accessing wallet:", error);
         router.push("/Main");
       }
-    }
-
-    // else if (typeof uid != "undefined") {
-    //   console.log("Hello, Google Account connected:", uid);
-    // }
-    else {
+    } else {
       console.log("MetaMask not found. Redirecting...");
       router.push("/Main");
     }
   };
-  useEffect(() => {
-    const fetchWalboId = async () => {
+
+  const getBalance = async (address) => {
+    const publicClient = createPublicClient({
+      chain: sepolia,
+      transport: custom(window.ethereum),
+    });
+
+    const balance = await publicClient.getBalance({ address });
+    const formatted = parseFloat(formatEther(balance)).toFixed(4);
+    console.log(`ETH Balance: ${formatted}`);
+    setBalance(formatted);
+  };
+
+  const fetchWalboIdAndContacts = async () => {
+    try {
       const res = await fetch(
         `/api/users?walletAddress=${encodeURIComponent(address)}`
       );
       const data = await res.json();
-      setwalboId(data.walboId);
-    };
+      if (data.exists) {
+        setWalboId(data.walboId);
+        setContacts(data.contacts || []);
+      } else {
+        alert("No Walbo account found. Please create an account.");
+        router.push("/create-user");
+      }
+    } catch (err) {
+      console.error("Error fetching walboId:", err);
+      alert("Failed to load account details. Please try again.");
+      router.push("/Main");
+    }
+  };
 
+  useEffect(() => {
     if (address) {
-      fetchWalboId();
+      fetchWalboIdAndContacts();
     }
   }, [address]);
+
   useEffect(() => {
     if (!window.ethereum) return;
 
@@ -99,20 +120,6 @@ function Dashboard() {
     };
   }, []);
 
-  const [balance, setBalance] = useState();
-
-  const getBalance = async (address) => {
-    const publicClient = createPublicClient({
-      chain: sepolia,
-      transport: custom(window.ethereum),
-    });
-
-    const balance = await publicClient.getBalance({ address });
-    const formatted = parseFloat(formatEther(balance)).toFixed(4);
-    console.log(`ETH Balance: ${parseFloat(formatted).toFixed(4)}`);
-    setBalance(formatted);
-  };
-
   useEffect(() => {
     main();
   }, []);
@@ -120,22 +127,58 @@ function Dashboard() {
   const handleContactButton = () => {
     router.push(`/ContactList`);
   };
+
   const handleAccountButton = () => {
     router.push(`/Account`);
   };
-  const [receiverAddress, setreceiverAddress] = useState("");
-  const [amount, setAmount] = useState("");
 
   const handleAddressChange = (e) => {
-    setreceiverAddress(e.target.value);
+    setReceiverAddress(e.target.value);
   };
 
   const handleAmountChange = (e) => {
     setAmount(e.target.value);
   };
 
+  const handleContactSelect = (e) => {
+    const contactName = e.target.value;
+    setSelectedContact(contactName);
+    const contact = contacts.find((c) => c.name === contactName);
+    setReceiverAddress(contact ? contact.publicKey : "");
+  };
+
+  const getDetails = async () => {
+    if (!contactWalboId.trim()) {
+      alert("Please enter a Walbo ID to verify.");
+      return;
+    }
+    try {
+      const res = await fetch(
+        `/api/users?walboId=${encodeURIComponent(contactWalboId)}`
+      );
+      const data = await res.json();
+      if (data.exists) {
+        setContactWalletAddress(data.walletAddress);
+        setReceiverAddress(data.walletAddress);
+        setIsAvailable(false);
+      } else {
+        setContactWalletAddress("");
+        setReceiverAddress("");
+        setIsAvailable(true);
+      }
+      setIsAvailableIsVisible(true);
+    } catch (err) {
+      console.error("Error checking walboId:", err);
+      setContactWalletAddress("");
+      setReceiverAddress("");
+      setIsAvailable(true);
+      setIsAvailableIsVisible(true);
+      alert("Error verifying Walbo ID. Please try again.");
+    }
+  };
+
   const handleSendTransaction = async () => {
-    setisPublicPaymentFailed(false);
+    setIsPublicPaymentFailed(false);
     const client = createWalletClient({
       chain: sepolia,
       transport: custom(window.ethereum),
@@ -143,29 +186,45 @@ function Dashboard() {
 
     const [address] = await client.getAddresses();
     try {
-      if (!receiverAddress || !amount || isNaN(amount)) {
-        alert("Please enter a valid address and amount.");
+      // Validate inputs
+      if (!receiverAddress || !/^(0x)?[0-9a-fA-F]{40}$/.test(receiverAddress)) {
+        alert("Please enter a valid Ethereum address.");
         return;
       }
+      if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+      }
+      if (balance && parseFloat(amount) > parseFloat(balance)) {
+        alert("Insufficient balance for this transaction.");
+        return;
+      }
+
       const hash = await client.sendTransaction({
         account: address,
         to: receiverAddress,
         value: parseEther(amount),
       });
-      setisPublicTransactionPending(true);
+      setIsPublicTransactionPending(true);
       const receipt = await waitForTransactionReceipt(client, { hash });
-      if (receipt !== undefined) {
-        setisPublicTransactionPending(false);
-        setisPublicTransactionSuccess(true);
+      if (receipt) {
+        setIsPublicTransactionPending(false);
+        setIsPublicTransactionSuccess(true);
         setAmount("");
-        setreceiverAddress("");
+        setReceiverAddress("");
+        setContactWalboId("");
+        setContactWalletAddress("");
+        setIsAvailableIsVisible(false);
+        setSelectedContact("");
+        await getBalance(address); // Refresh balance
       }
       setTimeout(() => {
-        setisPublicTransactionSuccess(false);
+        setIsPublicTransactionSuccess(false);
       }, 5000);
     } catch (error) {
-      console.log(error);
-      setisPublicPaymentFailed(true);
+      console.error("Transaction error:", error);
+      setIsPublicPaymentFailed(true);
+      alert("Transaction failed: " + error.message);
     }
   };
 
@@ -175,20 +234,17 @@ function Dashboard() {
         <div>
           <Image src={logo} width={200} alt="Walbo" priority />
         </div>
-
         <div className="nav">
           <ul>
             <li>HOME</li>
             <li onClick={handleContactButton}>CONTACTS</li>
             <li onClick={handleAccountButton}>MY ACCOUNT</li>
-            <li>{walboId}</li>
+            <li>{walboId || "Loading..."}</li>
           </ul>
         </div>
       </div>
-      {/* <div className="WalboId">{ walboId }</div> */}
       <div className="AccountRelatedOperations">
         <div className="getBalance">Your Current Balance:</div>
-
         {isVisible ? (
           <div className="balance">
             {balance ? `${balance} SepoliaETH` : "Loading..."}
@@ -197,7 +253,7 @@ function Dashboard() {
           <div className="getBalance">••••••</div>
         )}
         {isVisible ? (
-          <div className="getBalance" onClick={() => setisVisible(false)}>
+          <div className="getBalance" onClick={() => setIsVisible(false)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -212,7 +268,7 @@ function Dashboard() {
           <div
             className="getBalance"
             onClick={() => {
-              setisVisible(true);
+              setIsVisible(true);
               if (address) getBalance(address);
             }}
           >
@@ -232,9 +288,9 @@ function Dashboard() {
         <div
           className="paymentOption"
           onClick={() => {
-            setisWalboIdPayment(true);
-            if (isContactsPayment) setisContactsPayment(false);
-            if (isPublicPayment) setisPublicPayment(false);
+            setIsWalboIdPayment(true);
+            setIsContactsPayment(false);
+            setIsPublicPayment(false);
           }}
         >
           <div className="paymentImage">
@@ -253,9 +309,9 @@ function Dashboard() {
         <div
           className="paymentOption"
           onClick={() => {
-            setisContactsPayment(true);
-            if (isWalboIdPayment) setisWalboIdPayment(false);
-            if (isPublicPayment) setisPublicPayment(false);
+            setIsContactsPayment(true);
+            setIsWalboIdPayment(false);
+            setIsPublicPayment(false);
           }}
         >
           <div className="paymentImage">
@@ -274,9 +330,9 @@ function Dashboard() {
         <div
           className="paymentOption"
           onClick={() => {
-            setisPublicPayment(true);
-            if (isWalboIdPayment) setisWalboIdPayment(false);
-            if (isContactsPayment) setisContactsPayment(false);
+            setIsPublicPayment(true);
+            setIsWalboIdPayment(false);
+            setIsContactsPayment(false);
           }}
         >
           <div className="paymentImage">
@@ -294,147 +350,157 @@ function Dashboard() {
         </div>
       </div>
 
-      {isWalboIdPayment ? (
+      {isWalboIdPayment && (
         <div className="payWalboContainer">
           <div className="payWalboHeading">Pay to Walbo ID</div>
-          {isPublicPaymentFailed ? (
+          {isPublicPaymentFailed && (
             <div className="transactionFailed">Transaction Failed!</div>
-          ) : (
-            ""
           )}
-          {isPublicTransactionPending ? (
+          {isPublicTransactionPending && (
             <div className="transactionPending">
               Transaction Pending... Please Wait!
             </div>
-          ) : (
-            ""
           )}
-          {isPublicTransactionSuccess ? (
+          {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
-          ) : (
-            ""
           )}
-
           <div className="payWalboContent">
-            <label htmlFor="walboId" name="walboId" id="walboId">
-              Enter the Walbo ID of the receiver:
-            </label>
+            <label htmlFor="walboId">Enter the Walbo ID of the receiver:</label>
+            <div className="walboIdInputs">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="#000000"
+              >
+                <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v54.67q0 57-39.73 96.5t-97.6 39.5q-35.72 0-67.36-16.67t-49.98-47.33q-27 32.33-65.22 48.16-38.22 15.84-80.11 15.84-79.4 0-135.37-55.5-55.96-55.5-55.96-135.18t55.96-135.83Q400.6-672 480-672t135.37 56.16q55.96 56.16 55.96 135.84v54.67q0 29.07 20.67 49.2Q712.67-356 742.33-356q29.67 0 50.34-20.13 20.66-20.13 20.66-49.2V-480q0-139.58-96.87-236.46-96.88-96.87-236.46-96.87t-236.46 96.87Q146.67-619.58 146.67-480t96.87 236.46q96.88 96.87 236.46 96.87h209.33V-80H480Zm.04-276q51.96 0 88.29-36.17 36.34-36.16 36.34-87.83 0-52.67-36.38-89-36.37-36.33-88.33-36.33T391.67-569q-36.34 36.33-36.34 89 0 51.67 36.38 87.83Q428.08-356 480.04-356Z" />
+              </svg>
+              <input
+                id="walboId"
+                name="walboId"
+                placeholder="Enter Walbo ID"
+                value={contactWalboId}
+                onChange={(e) => setContactWalboId(e.target.value)}
+              />
+              <button className="button" onClick={getDetails}>
+                Verify
+              </button>
+            </div>
+            <label htmlFor="publicKey">Receiver's Public Key:</label>
             <input
-              id="walboId"
-              name="walboId"
-              placeholder="0x..."
-              value={receiverAddress}
-              onChange={handleAddressChange}
-            ></input>
-            <label htmlFor="amount" name="amount" id="amount">
-              Enter amount (in Ethers):
-            </label>
+              id="publicKey"
+              name="publicKey"
+              value={contactWalletAddress}
+              disabled
+              className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
+              placeholder="Wallet address will appear here"
+            />
+            <label htmlFor="amount">Enter amount (in Ethers):</label>
             <input
               id="amount"
               name="amount"
               placeholder="0.01"
               value={amount}
               onChange={handleAmountChange}
-            ></input>
-            <button onClick={() => handleSendTransaction()}>
-              Send Transaction
-            </button>
+            />
+            {isAvailableIsVisible &&
+              (isAvailable ? (
+                <div className="transactionFailed">Walbo ID Invalid!</div>
+              ) : (
+                <div className="transactionSuccess">Verified</div>
+              ))}
+            <button onClick={handleSendTransaction}>Send Transaction</button>
+            
           </div>
         </div>
-      ) : (
-        ""
       )}
 
-      {isContactsPayment ? (
+      {isContactsPayment && (
         <div className="payContactsContainer">
           <div className="payContactsHeading">Pay to a Contact</div>
-          {isPublicTransactionPending ? (
+          {isPublicPaymentFailed && (
+            <div className="transactionFailed">Transaction Failed!</div>
+          )}
+          {isPublicTransactionPending && (
             <div className="transactionPending">
               Transaction Pending... Please Wait!
             </div>
-          ) : (
-            ""
           )}
-          {isPublicTransactionSuccess ? (
+          {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
-          ) : (
-            ""
           )}
-
           <div className="payContactContent">
-            <label htmlFor="contact" name="contact" id="contact">
-              Enter the name to pay:
-            </label>
-            <input
+            <label htmlFor="contact">Select a Contact:</label>
+            <select
               id="contact"
               name="contact"
-              placeholder="Search a Name"
+              value={selectedContact}
+              onChange={handleContactSelect}
+            >
+              <option value="">Select a contact</option>
+              {contacts.map((contact) => (
+                <option key={contact.publicKey} value={contact.name}>
+                  {contact.name}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="publicKey">Contact's Wallet Address:</label>
+            <input
+              id="publicKey"
+              name="publicKey"
               value={receiverAddress}
-              onChange={handleAddressChange}
-            ></input>
-            <label htmlFor="amount" name="amount" id="amount">
-              Enter amount (in Ethers):
-            </label>
+              disabled
+              className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
+              placeholder="Select a contact to see wallet address"
+            />
+            <label htmlFor="amount">Enter amount (in Ethers):</label>
             <input
               id="amount"
               name="amount"
               placeholder="0.01"
               value={amount}
               onChange={handleAmountChange}
-            ></input>
-            <button onClick={() => handleSendTransaction()}>
-              Send Transaction
-            </button>
+            />
+            <button onClick={handleSendTransaction}>Send Transaction</button>
           </div>
         </div>
-      ) : (
-        ""
       )}
 
-      {isPublicPayment ? (
+      {isPublicPayment && (
         <div className="payPublicContainer">
           <div className="payPublicKeyHeading">Pay to Public Key</div>
-          {isPublicTransactionPending ? (
+          {isPublicPaymentFailed && (
+            <div className="transactionFailed">Transaction Failed!</div>
+          )}
+          {isPublicTransactionPending && (
             <div className="transactionPending">
               Transaction Pending... Please Wait!
             </div>
-          ) : (
-            ""
           )}
-          {isPublicTransactionSuccess ? (
+          {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
-          ) : (
-            ""
           )}
-
           <div className="payPublicKeyContent">
-            <label htmlFor="publicKey" name="publicKey" id="publicKey">
-              Enter the Public Key:
-            </label>
+            <label htmlFor="publicKey">Enter the Public Key:</label>
             <input
               id="publicKey"
               name="publicKey"
               placeholder="0x..."
               value={receiverAddress}
               onChange={handleAddressChange}
-            ></input>
-            <label htmlFor="amount" name="amount" id="amount">
-              Enter amount (in Ethers):
-            </label>
+            />
+            <label htmlFor="amount">Enter amount (in Ethers):</label>
             <input
               id="amount"
               name="amount"
               placeholder="0.01"
               value={amount}
               onChange={handleAmountChange}
-            ></input>
-            <button onClick={() => handleSendTransaction()}>
-              Send Transaction
-            </button>
+            />
+            <button onClick={handleSendTransaction}>Send Transaction</button>
           </div>
         </div>
-      ) : (
-        ""
       )}
     </>
   );
