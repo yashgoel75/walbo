@@ -227,7 +227,7 @@ function ContactList() {
             </div>
             <br></br>
 
-      <div className="heading container">Contacts <span className="contactcount">({ContactCount})</span></div>
+      <div className="container h3">Contacts <span className="h4">({ContactCount})</span></div>
         <div className="input-group mt-3 container">
           <input
             className="form-control"

@@ -147,15 +147,6 @@ button {
   text-align: center;
 }
 
-.btn-group button {
-  width: 70px;
-}
-
-.edit .btn-group button {
-  width: 80px;
-  text-align: center;
-}
-
 .logo {
   width: 200px;
 }
