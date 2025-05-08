@@ -204,7 +204,7 @@ function Account() {
               onChange={(e) => setName(e.target.value)}
             />
             <br />
-            <label htmlFor="publicKey">Receiver's Wallet Address</label>
+            <label htmlFor="publicKey">Receiver&lsquo;s Wallet Address</label>
             {publicKey === "" ? (
               <input
                 className="focus:outline-1"

@@ -465,7 +465,7 @@ function Dashboard() {
                   Verified{" "}
                 </div>
               ))}
-            <label htmlFor="publicKey">Receiver's Public Key:</label>
+            <label htmlFor="publicKey">Receiver&lsquo;s Public Key:</label>
             <input
               id="publicKey"
               name="publicKey"
@@ -524,7 +524,7 @@ function Dashboard() {
 
             <br></br>
             <br></br>
-            <label htmlFor="publicKey">Contact's Wallet Address:</label>
+            <label htmlFor="publicKey">Contact&lsquo;s Wallet Address:</label>
             <input
               id="publicKey"
               name="publicKey"
