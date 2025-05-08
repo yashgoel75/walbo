@@ -4,45 +4,81 @@ import Walbo from "@/models/walbo";
 
 export async function POST(request) {
   try {
-    const { walboId, contact } = await request.json();
-
-    if (!walboId || !contact || !contact.name || !contact.publicKey) {
-      return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+    const body = await request.json();
 
     await connectMongoDB();
 
-    const user = await Walbo.findOne({ walboId });
+    // CASE 1: Creating a new user
+    if (body.walletAddress && body.walboId && !body.contact) {
+      const { walletAddress, walboId } = body;
 
-    if (!user) {
+      // Check if user already exists
+      const existingUser = await Walbo.findOne({
+        $or: [{ walletAddress }, { walboId }],
+      });
+
+      if (existingUser) {
+        return NextResponse.json(
+          { message: "User already exists" },
+          { status: 409 }
+        );
+      }
+
+      // Create and save new user
+      const newUser = new Walbo({ walboId, walletAddress, contacts: [] });
+      await newUser.save();
+
       return NextResponse.json(
-        { message: "User with this Walbo ID not found" },
-        { status: 404 }
+        { message: "User created successfully", user: newUser },
+        { status: 201 }
       );
     }
 
-    const exists = user.contacts?.some(
-      (c) =>
-        c.publicKey === contact.publicKey ||
-        (contact.walboId && c.walboId === contact.walboId)
-    );
+    // CASE 2: Adding a contact
+    if (body.walboId && body.contact) {
+      const { walboId, contact } = body;
 
-    if (exists) {
+      if (!contact.name || !contact.publicKey) {
+        return NextResponse.json(
+          { message: "Missing required fields" },
+          { status: 400 }
+        );
+      }
+
+      const user = await Walbo.findOne({ walboId });
+
+      if (!user) {
+        return NextResponse.json(
+          { message: "User with this Walbo ID not found" },
+          { status: 404 }
+        );
+      }
+
+      const exists = user.contacts?.some(
+        (c) =>
+          c.publicKey === contact.publicKey ||
+          (contact.walboId && c.walboId === contact.walboId)
+      );
+
+      if (exists) {
+        return NextResponse.json(
+          { message: "Contact already exists" },
+          { status: 409 }
+        );
+      }
+
+      user.contacts = [...(user.contacts || []), contact];
+      await user.save();
+
       return NextResponse.json(
-        { message: "Contact already exists" },
-        { status: 409 }
+        { message: "Contact added successfully!", user },
+        { status: 200 }
       );
     }
-
-    user.contacts = [...(user.contacts || []), contact];
-    await user.save();
 
     return NextResponse.json(
-      { message: "Contact added successfully!", user },
-      { status: 200 }
+      { message: "Missing required fields" },
+      { status: 400 }
     );
   } catch (error) {
     console.error("POST error:", error);
@@ -52,6 +88,7 @@ export async function POST(request) {
     );
   }
 }
+
 
 export async function GET(request) {
   try {

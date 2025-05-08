@@ -33,6 +33,7 @@ const walboSchema = new mongoose.Schema({
     // },
   },
   contacts: [contactSchema],
+  transactionHistory: [],
 });
 
 const Walbo = mongoose.models.Walbo || mongoose.model('Walbo', walboSchema);
