@@ -34,7 +34,7 @@
   list-style: none;
 }
 
-.Header {
+/* .Header {
   position: relative;
   display: flex;
   justify-content: center;
@@ -145,7 +145,7 @@ button {
   background-color: rgba(180, 180, 180, 0.814);
   border-radius: 4px;
   text-align: center;
-}
+} */
 
 .logo {
   width: 200px;

@@ -7,91 +7,10 @@
   font-style: normal;
 }
 
-.main-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  min-height: 100vh;
-  margin: auto;
-  overflow: hidden;
+.container {
+  width: 40%;
 }
 
-.createNewUserContainer {
-  display: flex;
-  flex-direction: column;
-  font-size: 20px;
-  width: 100%;
-  margin: 25px 0;
-  border: 1px solid #acaaaa;
-  border-radius: 12px;
-  transition: border-color 0.3s ease;
-  align-items: center;
-  height: fit-content;
-}
-
-.createNewUserHeading {
-  text-align: center;
-  width: 100%;
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
-  font-size: 25px;
-  margin-bottom: 15px;
-}
-
-.createNewUserContent {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-}
-
-.userHaveWalboId {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.userHaveWalboId label,
-.inputPublicKey label {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 18px;
-}
-
-/* Unified input styling */
-.createNewUserContent input {
-  border: 1px solid #acaaaa;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 16px;
-  font-family: "Inter", sans-serif;
-  outline: none;
-  width: 100%;
-}
-
-/* Input public key section */
-.inputPublicKey {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.inputPublicKey input[disabled] {
-  background-color: #e9ecef;
-  border-color: #ced4da;
-  cursor: not-allowed;
-}
-
-/* Line separator */
-.line {
-  width: 100%;
-  border-top: 1px solid #acaaaa;
-  margin: 10px 0;
-}
-
-/* Status messages */
 .installMetaMask {
   background-color: rgba(228, 60, 60, 0.822);
   color: #680101;
@@ -121,22 +40,3 @@
 }
 
 /* Save Contact button */
-
-
-/* Responsive design */
-@media (min-width: 900px) {
-  .main-container {
-    width: 100%;
-  }
-
-  .createNewUserContainer {
-    width: 50%;
-    max-width: 600px;
-  }
-
-  .createNewUserContent input {
-    font-size: 18px;
-    padding: 10px 14px;
-  }
-
-}

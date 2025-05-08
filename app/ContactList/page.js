@@ -299,7 +299,7 @@ function ContactList() {
                   </td>
                   <td>
                     {editContact && editContact._id === contact._id ? (
-                      <div className="edit btn-group">
+                      <div className="btn-group">
                         <button className="btn btn-outline-primary" onClick={handleSaveEdit}>Save</button>
                         <button className="btn btn-outline-danger" onClick={() => setEditContact(null)}>Cancel</button>
                       </div>
@@ -317,7 +317,7 @@ function ContactList() {
             </tbody>
           </table>
         ) : (
-          <div className="noContacts">No contacts found.</div>
+          <div className="noContacts h5">No contacts found.</div>
         )}
       </div>
     </>
