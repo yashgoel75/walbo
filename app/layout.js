@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Walbo - Connect with the Decentralised",
-  description: "",
+  description: "Simplify Web3 access with Walbo. Connect with the decentralised world using your wallet in just seconds—fast, private, and secure.",
 };
 
 export default function RootLayout({ children }) {
