@@ -111,63 +111,6 @@
   transform: scale(1.1);
 }
 
-.payWalboContainer,
-.payContactsContainer,
-.payPublicContainer {
-  width: 90%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  padding: 5px 20px;
-  align-items: center;
-  border: 1px solid rgba(188, 188, 188, 0.61);
-  border-radius: 8px;
-}
-
-.payWalboHeading,
-.payContactsHeading,
-.payPublicKeyHeading {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.payWalboContent,
-.payContactContent,
-.payPublicKeyContent {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  width: 100%;
-  text-align: left;
-}
-
-#publicKey, #amount {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  padding: 1px 10px;
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(174, 174, 174, 0.558);
-  border-radius: 4px;
-}
-.payContactContent input,
-.payPublicKeyContent input {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  margin: 12px 0px;
-  padding: 1px 10px;
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(174, 174, 174, 0.558);
-}
-
 .transactionFailed,
 .transactionSuccess,
 .transactionPending {
@@ -195,40 +138,6 @@
 .transactionPending {
   background-color: rgba(153, 143, 6, 0.885);
   color: rgb(86, 81, 4);
-}
-
-.walboIdInputs {
-  display: flex;
-}
-
-.walboIdInputs svg {
-  padding: 3px 3px;
-  border: 1px solid rgb(172, 170, 170);
-  border-radius: 4px 0px 0px 4px;
-}
-
-.walboIdInputs input {
-  border: 1px solid rgb(172, 170, 170);
-  padding: 1px 8px;
-  width: 85%;
-  display: flex;
-  margin: 0;
-  justify-content: center;
-  border-radius: 0px;
-}
-
-.walboIdInputs .button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 15%;
-  height: 40px;
-  border: 1px solid rgb(255, 195, 14);
-  border-radius: 0px 4px 4px 0px;
-  padding: 1px 3px;
-  background-color: rgb(255, 195, 14);
-  transition: 0.2s ease;
-  text-align: center;
 }
 
 .selectContact {

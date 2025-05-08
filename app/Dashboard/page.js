@@ -285,6 +285,8 @@ function Dashboard() {
         </div>
       </div>
       <br></br>
+
+
       <div className="AccountRelatedOperations">
         <div className="getBalance">Welcome,</div>
         <div className="balance">{walboId || "Loading..."}</div>
@@ -330,6 +332,9 @@ function Dashboard() {
           </div>
         )}
       </div>
+
+
+
       <div className="paymentOptions">
         <div
           className="paymentOption"
@@ -395,9 +400,12 @@ function Dashboard() {
           <div className="paymentName">Pay Public Key</div>
         </div>
       </div>
+
+
+
       {isWalboIdPayment && (
-        <div className="payWalboContainer">
-          <div className="payWalboHeading">Pay to Walbo ID</div>
+        <div className="container border mb-4 rounded-3 ps-4 pe-4">
+          <div className="h4 mt-2 text-center">Pay to Walbo ID</div>
           {isPublicPaymentFailed && (
             <div className="transactionFailed">Transaction Failed!</div>
           )}
@@ -412,9 +420,9 @@ function Dashboard() {
           {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
           )}
-          <div className="payWalboContent">
+          <div className="h5">
             <label htmlFor="walboId">Enter the Walbo ID of the receiver:</label>
-            <div className="input-group mb-3">
+            <div className="input-group mb-3 mt-2">
               <span className="input-group-text">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -483,7 +491,7 @@ function Dashboard() {
               onChange={handleAmountChange}
             />
 
-            <button className="btn btn-warning" onClick={handleSendTransaction}>
+            <button className="btn btn-warning mb-3" onClick={handleSendTransaction}>
               Send Transaction
             </button>
           </div>
@@ -491,8 +499,8 @@ function Dashboard() {
       )}
 
       {isContactsPayment && (
-        <div className="payContactsContainer">
-          <div className="payContactsHeading">Pay to a Contact</div>
+        <div className="container border mb-4 rounded-3 ps-4 pe-4">
+          <div className="h4 mt-2 text-center">Pay to a Contact</div>
           {isPublicPaymentFailed && (
             <div className="transactionFailed">Transaction Failed!</div>
           )}
@@ -504,7 +512,7 @@ function Dashboard() {
           {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
           )}
-          <div className="payContactContent">
+          <div className="h5">
             <label className="selectContact" htmlFor="contact">
               <strong>Select a Contact:</strong>
             </label>
@@ -525,23 +533,24 @@ function Dashboard() {
             <br></br>
             <br></br>
             <label htmlFor="publicKey">Contact&lsquo;s Wallet Address:</label>
+            <div>
             <input
               id="publicKey"
               name="publicKey"
               value={receiverAddress}
               disabled
-              className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
+              className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200 form-control mb-3 mt-2"
               placeholder="Select a contact to see wallet address"
-            />
+            /></div>
             <label htmlFor="amount">Enter amount (in Ethers):</label>
-            <input
+            <div><input className="form-control mb-3 mt-2"
               id="amount"
               name="amount"
               placeholder="0.01"
               value={amount}
               onChange={handleAmountChange}
-            />
-            <button className="btn btn-warning" onClick={handleSendTransaction}>
+            /></div>
+            <button className="btn btn-warning mb-3" onClick={handleSendTransaction}>
               Send Transaction
             </button>
           </div>
@@ -549,8 +558,8 @@ function Dashboard() {
       )}
 
       {isPublicPayment && (
-        <div className="payPublicContainer">
-          <div className="payPublicKeyHeading">Pay to Public Key</div>
+        <div className="container border mb-4 rounded-3 ps-4 pe-4">
+          <div className="h4 mt-2 text-center">Pay to Public Key</div>
           {isPublicPaymentFailed && (
             <div className="transactionFailed">Transaction Failed!</div>
           )}
@@ -562,24 +571,24 @@ function Dashboard() {
           {isPublicTransactionSuccess && (
             <div className="transactionSuccess">Transaction Successful!</div>
           )}
-          <div className="payPublicKeyContent">
+          <div className="h5">
             <label htmlFor="publicKey">Enter the Public Key:</label>
-            <input
+            <div><input className="form-control mb-3 mt-2"
               id="publicKey"
               name="publicKey"
               placeholder="0x..."
               value={receiverAddress}
               onChange={handleAddressChange}
-            />
+            /></div>
             <label htmlFor="amount">Enter amount (in Ethers):</label>
-            <input
+            <input className="form-control mb-3 mt-2"
               id="amount"
               name="amount"
               placeholder="0.01"
               value={amount}
               onChange={handleAmountChange}
             />
-            <button className="btn btn-warning" onClick={handleSendTransaction}>
+            <button className="btn btn-warning mb-3" onClick={handleSendTransaction}>
               Send Transaction
             </button>
           </div>
