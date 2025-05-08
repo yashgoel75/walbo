@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
   walboId: {
@@ -14,6 +14,17 @@ const contactSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+const transactionHistorySchema = new mongoose.Schema({
+  to: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  }
+}, { timestamps: true });
 
 const walboSchema = new mongoose.Schema({
   walboId: {
@@ -33,7 +44,7 @@ const walboSchema = new mongoose.Schema({
     // },
   },
   contacts: [contactSchema],
-  transactionHistory: [],
+  transactionHistory: [transactionHistorySchema],
 });
 
 const Walbo = mongoose.models.Walbo || mongoose.model('Walbo', walboSchema);

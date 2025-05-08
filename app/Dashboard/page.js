@@ -184,56 +184,67 @@ function Dashboard() {
     }
   };
 
-  const handleSendTransaction = async () => {
-    setIsPublicPaymentFailed(false);
-    const client = createWalletClient({
-      chain: sepolia,
-      transport: custom(window.ethereum),
-    });
-
-    const [address] = await client.getAddresses();
-    try {
-      if (!receiverAddress || !/^(0x)?[0-9a-fA-F]{40}$/.test(receiverAddress)) {
-        alert("Please enter a valid Ethereum address.");
-        return;
-      }
-      if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-        alert("Please enter a valid amount greater than 0.");
-        return;
-      }
-      if (balance && parseFloat(amount) > parseFloat(balance)) {
-        alert("Insufficient balance for this transaction.");
-        return;
-      }
-
-      const hash = await client.sendTransaction({
-        account: address,
-        to: receiverAddress,
-        value: parseEther(amount),
+    const handleSendTransaction = async () => {
+      setIsPublicPaymentFailed(false);
+      const client = createWalletClient({
+        chain: sepolia,
+        transport: custom(window.ethereum),
       });
-      setIsPublicTransactionPending(true);
-      const receipt = await waitForTransactionReceipt(client, { hash });
-      if (receipt) {
-        setIsPublicTransactionPending(false);
-        setIsPublicTransactionSuccess(true);
-        setAmount("");
-        setReceiverAddress("");
-        setContactWalboId("");
-        setContactWalletAddress("");
-        setIsAvailableIsVisible(false);
-        setSelectedContact("");
-        await getBalance(address);
+
+      const [address] = await client.getAddresses();
+      try {
+        if (!receiverAddress || !/^(0x)?[0-9a-fA-F]{40}$/.test(receiverAddress)) {
+          alert("Please enter a valid Ethereum address.");
+          return;
+        }
+        if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+          alert("Please enter a valid amount greater than 0.");
+          return;
+        }
+        if (balance && parseFloat(amount) > parseFloat(balance)) {
+          alert("Insufficient balance for this transaction.");
+          return;
+        }
+        const hash = await client.sendTransaction({
+          account: address,
+          to: receiverAddress,
+          value: parseEther(amount),
+        });
+        setIsPublicTransactionPending(true);
+        const receipt = await waitForTransactionReceipt(client, { hash });
+        if (receipt) {
+          setIsPublicTransactionPending(false);
+          setIsPublicTransactionSuccess(true);
+          setAmount("");
+          setReceiverAddress("");
+          setContactWalboId("");
+          setContactWalletAddress("");
+          setIsAvailableIsVisible(false);
+          setSelectedContact("");
+          await getBalance(address);
+
+          await fetch("/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              walboId: walboId,
+              to: receiverAddress,
+              amount: parseFloat(amount),
+            }),
+          });
+        }
+        setTimeout(() => {
+          setIsPublicTransactionSuccess(false);
+        }, 5000);
+      } catch (error) {
+        console.error("Transaction error:", error);
+        console.log("Transaction failed: " + error.message);
+        setisRequestRejected(true);
+        setTimeout(() => setisRequestRejected(false), 3000);
       }
-      setTimeout(() => {
-        setIsPublicTransactionSuccess(false);
-      }, 5000);
-    } catch (error) {
-      console.error("Transaction error:", error);
-      console.log("Transaction failed: " + error.message);
-      setisRequestRejected(true);
-      setTimeout(() => setisRequestRejected(false), 3000);
-    }
-  };
+    };
 
   return (
     <>

@@ -86,7 +86,9 @@ function Account() {
       router.push("/Main");
     }
   };
-
+  function transactionHistory() {
+  router.push("/TransactionHistory")
+}
   useEffect(() => {
     if (!window.ethereum) return;
 
@@ -230,6 +232,11 @@ function Account() {
         <div className="getBalance">Contacts:</div>
         <div className="balance">{ContactCount || 0}</div>
         </div>
+        {/* <hr/>
+        <div className="accountName">
+        <div className="getBalance">Transaction History:</div>
+        <div className="balance"><div className="transactionHistoryButton" onClick={transactionHistory}>Go to Transaction History</div></div>
+        </div> */}
       </div>
       <br></br>
     </>

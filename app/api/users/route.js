@@ -5,14 +5,12 @@ import Walbo from "@/models/walbo";
 export async function POST(request) {
   try {
     const body = await request.json();
-
     await connectMongoDB();
 
     // CASE 1: Creating a new user
     if (body.walletAddress && body.walboId && !body.contact) {
       const { walletAddress, walboId } = body;
 
-      // Check if user already exists
       const existingUser = await Walbo.findOne({
         $or: [{ walletAddress }, { walboId }],
       });
@@ -24,8 +22,7 @@ export async function POST(request) {
         );
       }
 
-      // Create and save new user
-      const newUser = new Walbo({ walboId, walletAddress, contacts: [] });
+      const newUser = new Walbo({ walboId, walletAddress, contacts: [], transactionHistory: [] });
       await newUser.save();
 
       return NextResponse.json(
@@ -34,7 +31,29 @@ export async function POST(request) {
       );
     }
 
-    // CASE 2: Adding a contact
+    // CASE 2: Add a transaction
+    if (body.walboId && body.to && body.amount) {
+      const { walboId, to, amount } = body;
+
+      const user = await Walbo.findOne({ walboId });
+      if (!user) {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
+
+      const transaction = { to, amount };
+      user.transactionHistory.push(transaction);
+      await user.save();
+
+      return NextResponse.json(
+        { message: "Transaction recorded successfully", transaction, user },
+        { status: 200 }
+      );
+    }
+
+    // CASE 3: Adding a contact
     if (body.walboId && body.contact) {
       const { walboId, contact } = body;
 
@@ -46,7 +65,6 @@ export async function POST(request) {
       }
 
       const user = await Walbo.findOne({ walboId });
-
       if (!user) {
         return NextResponse.json(
           { message: "User with this Walbo ID not found" },
@@ -88,7 +106,6 @@ export async function POST(request) {
     );
   }
 }
-
 
 export async function GET(request) {
   try {
@@ -144,7 +161,13 @@ export async function PATCH(request) {
   try {
     const { walboId, contactId, updatedContact } = await request.json();
 
-    if (!walboId || !contactId || !updatedContact || !updatedContact.name || !updatedContact.publicKey) {
+    if (
+      !walboId ||
+      !contactId ||
+      !updatedContact ||
+      !updatedContact.name ||
+      !updatedContact.publicKey
+    ) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
