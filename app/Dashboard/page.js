@@ -414,26 +414,27 @@ function Dashboard() {
           )}
           <div className="payWalboContent">
             <label htmlFor="walboId">Enter the Walbo ID of the receiver:</label>
-            <div className="walboIdInputs">
+            <div className="input-group mb-3">
+              <span className="input-group-text">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="40px"
                 viewBox="0 -960 960 960"
-                width="40px"
+                width="25px"
                 fill="#000000"
               >
                 <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v54.67q0 57-39.73 96.5t-97.6 39.5q-35.72 0-67.36-16.67t-49.98-47.33q-27 32.33-65.22 48.16-38.22 15.84-80.11 15.84-79.4 0-135.37-55.5-55.96-55.5-55.96-135.18t55.96-135.83Q400.6-672 480-672t135.37 56.16q55.96 56.16 55.96 135.84v54.67q0 29.07 20.67 49.2Q712.67-356 742.33-356q29.67 0 50.34-20.13 20.66-20.13 20.66-49.2V-480q0-139.58-96.87-236.46-96.88-96.87-236.46-96.87t-236.46 96.87Q146.67-619.58 146.67-480t96.87 236.46q96.88 96.87 236.46 96.87h209.33V-80H480Zm.04-276q51.96 0 88.29-36.17 36.34-36.16 36.34-87.83 0-52.67-36.38-89-36.37-36.33-88.33-36.33T391.67-569q-36.34 36.33-36.34 89 0 51.67 36.38 87.83Q428.08-356 480.04-356Z" />
-              </svg>
+              </svg></span>
               <input
-                id="walboId"
+                className="form-control"
                 name="walboId"
                 placeholder="Enter Walbo ID"
                 value={contactWalboId}
                 onChange={(e) => setContactWalboId(e.target.value)}
               />
-              <button className="button" onClick={getDetails}>
+              <span className="input-group-text"><button className="button" onClick={getDetails}>
                 Verify
-              </button>
+              </button></span>
             </div>
             {isAvailableIsVisible &&
               (isAvailable ? (
@@ -467,16 +468,15 @@ function Dashboard() {
               ))}
             <label htmlFor="publicKey">Receiver&lsquo;s Public Key:</label>
             <input
-              id="publicKey"
               name="publicKey"
               value={contactWalletAddress}
               disabled
-              className="focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
+              className="form-control mt-2 focus:outline-1 disabled:bg-gray-100 disabled:border-gray-200"
               placeholder="Wallet address will appear here"
-            />
+            /><br></br>
             <label htmlFor="amount">Enter amount (in Ethers):</label>
             <input
-              id="amount"
+              className="form-control mb-3 mt-2"
               name="amount"
               placeholder="0.01"
               value={amount}
