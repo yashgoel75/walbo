@@ -14,6 +14,29 @@
   font-style: normal;
 }
 
+.darkModeToggle-true {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 10px;
+  background-color: #141414;
+}
+
+.darkModeToggle-false {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 10px;
+
+}
+
+.walbo-container-true {
+  background-color: #141414;
+  color: white;
+}
+.walbo-container-false {
+  background-color: white;
+  color: #141414;
+}
+
 .DashboardHeader {
   display: flex;
   width: 90%;
