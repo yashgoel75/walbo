@@ -22,7 +22,12 @@ export async function POST(request) {
         );
       }
 
-      const newUser = new Walbo({ walboId, walletAddress, contacts: [], transactionHistory: [] });
+      const newUser = new Walbo({
+        walboId,
+        walletAddress,
+        contacts: [],
+        transactionHistory: [],
+      });
       await newUser.save();
 
       return NextResponse.json(
@@ -32,8 +37,8 @@ export async function POST(request) {
     }
 
     // CASE 2: Add a transaction
-    if (body.walboId && body.to && body.amount) {
-      const { walboId, to, amount } = body;
+    if (body.walboId && body.transactionHistory) {
+      const { walboId, transactionHistory } = body;
 
       const user = await Walbo.findOne({ walboId });
       if (!user) {
@@ -43,14 +48,20 @@ export async function POST(request) {
         );
       }
 
-      const transaction = { to, amount };
-      user.transactionHistory.push(transaction);
+      user.transactionHistory.push(transactionHistory);
       await user.save();
 
       return NextResponse.json(
-        { message: "Transaction recorded successfully", transaction, user },
+        { message: "Transaction History added successfully!", user },
         { status: 200 }
       );
+
+      // await user.save();
+
+      // return NextResponse.json(
+      //   { message: "Transaction recorded successfully", transaction, user },
+      //   { status: 200 }
+      // );
     }
 
     // CASE 3: Adding a contact
@@ -93,6 +104,8 @@ export async function POST(request) {
         { status: 200 }
       );
     }
+
+    // CASE 4: Adding a transaction history
 
     return NextResponse.json(
       { message: "Missing required fields" },
@@ -139,6 +152,9 @@ export async function GET(request) {
           exists: !!existingUser,
           walboId: existingUser ? existingUser.walboId : null,
           contacts: existingUser ? existingUser.contacts : [],
+          transactionHistory: existingUser
+            ? existingUser.transactionHistory
+            : [],
         },
         { status: 200 }
       );

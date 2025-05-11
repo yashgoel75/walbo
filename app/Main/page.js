@@ -95,13 +95,9 @@ function Main() {
                 {signInWithMetaMask ? (
                   <div className="SocialLogin" onClick={handleMetaMaskLogin}>
                     <div className="Image">
-                                              <Image src={metamask} width={35} alt="MetaMask"></Image>
-
-                      
+                      <Image src={metamask} width={35} alt="MetaMask"></Image>
                     </div>
-                    <div className={`content`}>
-                      Continue with MetaMask
-                    </div>
+                    <div className={`content`}>Continue with MetaMask</div>
                   </div>
                 ) : (
                   ""

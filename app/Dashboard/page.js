@@ -41,7 +41,7 @@ function Dashboard() {
   const [contactWalletAddress, setContactWalletAddress] = useState("");
   const [isAvailable, setIsAvailable] = useState(false);
   const [isAvailableIsVisible, setIsAvailableIsVisible] = useState(false);
-  const [isRequestRejected, setisRequestRejected] = useState(false);
+  const [isRequestRejected, setIsRequestRejected] = useState(false);
 
   const router = useRouter();
 
@@ -184,14 +184,63 @@ function Dashboard() {
     }
   };
 
+  const [toWalboId, setToWalboId] = useState("");
+  const [fromName, setFromName] = useState("");
+  const [toName, setToName] = useState("");
+  const [remark, setRemark] = useState("");
+  const [transactionHash, setTransactionHash] = useState("");
+
   const handleSendTransaction = async () => {
-    setIsPublicPaymentFailed(false);
+    setIsPublicTransactionSuccess(false);
+    setIsRequestRejected(false);
+
     const client = createWalletClient({
       chain: sepolia,
       transport: custom(window.ethereum),
     });
 
     const [address] = await client.getAddresses();
+
+    let receiverWalboId = "";
+    let receiverName = "";
+    let receiverExists = false;
+
+    try {
+      // Fetch sender data
+      const resSender = await fetch(
+        `/api/users?walletAddress=${encodeURIComponent(address)}`
+      );
+      if (!resSender.ok) throw new Error("Failed to fetch sender data");
+      const data = await resSender.json();
+
+      // Fetch receiver data
+      const resReceiver = await fetch(
+        `/api/users?walletAddress=${encodeURIComponent(receiverAddress)}`
+      );
+      if (resReceiver.ok) {
+        const dataReceiver = await resReceiver.json();
+        receiverWalboId = dataReceiver.walboId || "";
+        receiverExists = dataReceiver.exists || false;
+        setToWalboId(receiverWalboId);
+      }
+
+      if (data.exists) {
+        const matchingContact = data.contacts.find(
+          (contact) => contact.publicKey === receiverAddress
+        );
+        if (matchingContact) {
+          receiverName = matchingContact.name;
+          setToName(receiverName);
+        }
+      } else {
+        alert("No Walbo account found. Please create an account.");
+        return;
+      }
+    } catch (err) {
+      console.error("Error fetching contacts:", err);
+      return;
+    }
+
     try {
       if (!receiverAddress || !/^(0x)?[0-9a-fA-F]{40}$/.test(receiverAddress)) {
         alert("Please enter a valid Ethereum address.");
@@ -205,47 +254,101 @@ function Dashboard() {
         alert("Insufficient balance for this transaction.");
         return;
       }
+
       const hash = await client.sendTransaction({
         account: address,
         to: receiverAddress,
         value: parseEther(amount),
       });
       setIsPublicTransactionPending(true);
+      setTransactionHash(hash);
+
       const receipt = await waitForTransactionReceipt(client, { hash });
       if (receipt) {
         setIsPublicTransactionPending(false);
         setIsPublicTransactionSuccess(true);
         setAmount("");
         setReceiverAddress("");
-        setContactWalboId("");
-        setContactWalletAddress("");
-        setIsAvailableIsVisible(false);
-        setSelectedContact("");
-        await getBalance(address);
 
-        await fetch("/api/users", {
+        // Update sender transaction history
+        const res = await fetch("/api/users", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            walboId: walboId,
-            to: receiverAddress,
-            amount: parseFloat(amount),
+            walboId,
+            transactionHistory: {
+              type: "1",
+              fromWalboId: walboId,
+              toWalboId: receiverWalboId,
+              fromName: "Me",
+              toName: receiverName,
+              fromPublicKey: address,
+              toPublicKey: receiverAddress,
+              amount,
+              remark,
+              status: "Success",
+              transactionHash: hash,
+            },
           }),
         });
+        if (!res.ok)
+          throw new Error("Failed to update sender transaction history");
+        const data = await res.json();
+        console.log(data.message);
+
+        // Update receiver transaction history
+        if (receiverExists) {
+          const resReceiver = await fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              walboId: receiverWalboId,
+              transactionHistory: {
+                type: "0",
+                fromWalboId: walboId,
+                toWalboId: receiverWalboId,
+                fromName: walboId,
+                toName: "Me",
+                fromPublicKey: address,
+                toPublicKey: receiverAddress,
+                amount,
+                remark,
+                status: "Success",
+                transactionHash: hash,
+              },
+            }),
+          });
+          if (!resReceiver.ok)
+            throw new Error("Failed to update receiver transaction history");
+        }
+
+        await getBalance(address);
       }
-      setTimeout(() => {
-        setIsPublicTransactionSuccess(false);
-      }, 5000);
     } catch (error) {
       console.error("Transaction error:", error);
-      console.log("Transaction failed: " + error.message);
-      setisRequestRejected(true);
-      setTimeout(() => setisRequestRejected(false), 3000);
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walboId,
+          transactionHistory: {
+            type: "1",
+            fromWalboId: walboId,
+            toWalboId: receiverWalboId,
+            fromName: "Me",
+            toName: receiverName,
+            fromPublicKey: address,
+            toPublicKey: receiverAddress,
+            amount,
+            remark,
+            status: "Failed",
+          },
+        }),
+      });
+      setIsRequestRejected(true);
+      setTimeout(() => setIsRequestRejected(false), 3000);
     }
   };
-
   return (
     <>
       <div className={`walbo-container`}>
@@ -397,6 +500,25 @@ function Dashboard() {
             </div>
             <div className="paymentName">Pay Public Key</div>
           </div>
+          <div
+            className="paymentOption"
+            onClick={() => {
+              router.push("/TransactionHistory");
+            }}
+          >
+            <div className="paymentImage">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="48px"
+                viewBox="0 -960 960 960"
+                width="48px"
+                fill="#000000"
+              >
+                <path d="M480-120q-138 0-240.5-91.5T122-440h82q14 104 92.5 172T480-200q117 0 198.5-81.5T760-480q0-117-81.5-198.5T480-760q-69 0-129 32t-101 88h110v80H120v-240h80v94q51-64 124.5-99T480-840q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-480q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-120Zm112-192L440-464v-216h80v184l128 128-56 56Z" />
+              </svg>
+            </div>
+            <div className="paymentName">Transaction History</div>
+          </div>
         </div>
 
         {isWalboIdPayment && (
@@ -492,7 +614,14 @@ function Dashboard() {
                 value={amount}
                 onChange={handleAmountChange}
               />
-
+              <label htmlFor="remark">Remarks (if any):</label>
+              <input
+                className="form-control mb-3 mt-2"
+                name="remark"
+                placeholder="Remark"
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+              />
               <button
                 className="btn btn-warning mb-3"
                 onClick={handleSendTransaction}
@@ -559,6 +688,14 @@ function Dashboard() {
                   onChange={handleAmountChange}
                 />
               </div>
+              <label htmlFor="remark">Remarks (if any):</label>
+              <input
+                className="form-control mb-3 mt-2"
+                name="remark"
+                placeholder="Remark"
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+              />
               <button
                 className="btn btn-warning mb-3"
                 onClick={handleSendTransaction}
@@ -603,6 +740,14 @@ function Dashboard() {
                 placeholder="0.01"
                 value={amount}
                 onChange={handleAmountChange}
+              />
+              <label htmlFor="remark">Remarks (if any):</label>
+              <input
+                className="form-control mb-3 mt-2"
+                name="remark"
+                placeholder="Remark"
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
               />
               <button
                 className="btn btn-warning mb-3"

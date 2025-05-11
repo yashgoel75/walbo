@@ -14,29 +14,6 @@
   font-style: normal;
 }
 
-.darkModeToggle-true {
-  display: flex;
-  justify-content: flex-end;
-  padding: 5px 10px;
-  background-color: #141414;
-}
-
-.darkModeToggle-false {
-  display: flex;
-  justify-content: flex-end;
-  padding: 5px 10px;
-
-}
-
-.walbo-container-true {
-  background-color: #141414;
-  color: white;
-}
-.walbo-container-false {
-  background-color: white;
-  color: #141414;
-}
-
 .DashboardHeader {
   display: flex;
   width: 90%;
@@ -45,127 +22,130 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .DashboardHeader .nav ul {
   display: flex;
-  align-items: center;
 }
-
 .DashboardHeader ul li {
   font-family: "Inter";
-  margin: 0px 12px;
+  margin: 0px 10px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  font-size: 22px;
+  font-weight: 550;
+  font-size: 19px;
   list-style: none;
-  transition: 0.1s ease;
-  height: 50px;
-  color: rgb(63, 62, 62);
 }
 
-.WalboId {
+/* .Header {
+  position: relative;
   display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.partition {
+  position: relative;
   width: 90%;
   margin: auto;
-  padding: 12px 10px;
+  border: 1px solid rgba(174, 174, 174, 0.558);
+  border-radius: 50%;
+}
+.heading {
+  position: relative;
+  width: 90%;
+  margin: auto;
   font-family: "Inter";
-  font-size: 20px;
   font-weight: 600;
+  font-size: 35px;
 }
-
-.DashboardHeader ul li:hover {
-  border-bottom: 2px solid #ff914d;
-  color: black;
-}
-
-.AccountRelatedOperations {
+.addContactContainer {
+  position: relative;
   width: 90%;
   display: flex;
+  flex-direction: row;
   margin: auto;
-  padding: 2px 5px;
+  text-align: right;
+  font-family: "Inter";
+  font-size: 18px;
+}
+.searchContact  {
+  margin: 0px 5px 0px 0px;
+  width: 80%;
+  font-family: "Inter";
+  font-size: 18px;
+  text-align: left;
+}
+.searchContact input {
+  width: 100%;
+  font-family: "Inter";
+  font-size: 18px;
+  padding: 2px 10px;
+  text-align: left;
+}
+
+.addContactFormContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  z-index: 998;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100vh;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.addContactForm {
+  border-radius: 8px;
+  position: absolute;
+  z-index: 999;
+  padding: 5px;
+  width: 60%;
+  height: 60vh;
+  background-color: white;
+  box-shadow: 5px 10px 15px 7px #888888;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.contactFormHeader {
+  display: flex;
   align-items: center;
 }
-
-.AccountRelatedOperations .getBalance {
-  display: flex;
-  padding: 2px 5px;
+.closeButton {
+  cursor: pointer;
+}
+.ContactFormHeading {
+  width: 100%;
+  text-align: center;
   font-family: "Inter";
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
 }
-
-.AccountRelatedOperations .balance {
-  display: flex;
-  padding: 2px 5px;
-  font-family: "Inter";
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.paymentOptions {
-  width: 90%;
-  display: flex;
-  margin: auto;
-  padding: 20px 5px;
-  align-items: center;
-  transition: 0.3s ease;
-  font-family: "Inter";
-}
-
-.paymentOption {
+.ContactFormForm {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s ease;
-  margin: 0px 20px;
-  cursor: pointer;
-}
-
-.paymentOption .paymentImage {
-  display: flex;
-  align-items: center;
-  height: 70px;
-}
-
-.paymentOption:hover {
-  transform: scale(1.1);
-}
-
-.transactionFailed,
-.transactionSuccess,
-.transactionPending {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
+  margin: 7px;
   font-family: "Inter";
-  padding: 5px 10px;
   font-weight: 500;
-  border-radius: 6px;
-  margin: 15px 0px;
+  font-size: 18px;
 }
-
-.transactionFailed {
-  background-color: rgba(228, 60, 60, 0.822);
-  color: #680101;
+.ContactFormForm input {
+  border: 1px solid gray;
+  border-radius: 4px;
+  font-family: "Inter";
+  font-size: 18px;
+  padding: 2px 10px;
 }
-
-.transactionSuccess {
-  background-color: rgba(14, 158, 50, 0.885);
-  color: #034509;
-}
-
-.transactionPending {
-  background-color: rgba(153, 143, 6, 0.885);
-  color: rgb(86, 81, 4);
-}
-
-.selectContact {
-  margin: 0px 20px 0px 0px;
-}
+button {
+  margin: 15px auto;
+  width: 15%;
+  background-color: rgba(180, 180, 180, 0.814);
+  border-radius: 4px;
+  text-align: center;
+} */
 
 .logo {
   width: 200px;
@@ -274,8 +254,17 @@
 .verifiedCheckMark .errorMark {
   margin-right: 5px;
 }
-.verticalLine {
-  width: 1px;
-  height: 100%;
-  background-color: #ccc;
+tr {
+  background: white;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+td {
+  padding: 16px;
+  vertical-align: middle;
+}
+
+.contactcount {
+  font-size: 23px;
+  font-weight: 400;
 }

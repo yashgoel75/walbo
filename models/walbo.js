@@ -16,14 +16,50 @@ const contactSchema = new mongoose.Schema({
 });
 
 const transactionHistorySchema = new mongoose.Schema({
-  to: {
+  type: {
+    type: String,
+    required: true,
+  },
+  fromWalboId: {
+    type: String,
+    required: true,
+  },
+  toWalboId: {
+    type: String,
+    required: false,
+  },
+  fromName: {
+    type: String,
+    required: false,
+  },
+  toName: {
+    type: String,
+    required: false,
+  },
+  fromPublicKey: {
+    type: String,
+    required: true,
+  },
+  toPublicKey: {
     type: String,
     required: true,
   },
   amount: {
-    type: Number,
+    type: String  ,
     required: true,
-  }
+  },
+  remark: {
+    type: String,
+    required: false,
+  },
+  status: {
+    type: String,
+    required: true,
+  },
+  transactionHash: {
+    type: String,
+    required: false,
+  },
 }, { timestamps: true });
 
 const walboSchema = new mongoose.Schema({
