@@ -39,6 +39,47 @@ function Main() {
   //     console.error("Google Sign-In Error:", error);
   //   }
   // };
+  const autoLoginCheck = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      const client = createWalletClient({
+        chain: sepolia,
+        transport: custom(window.ethereum),
+      });
+
+      try {
+        const [address] = await client.requestAddresses();
+        console.log("Connected wallet address:", address);
+
+        // Check if wallet address is already registered
+        const res = await fetch(
+          `/api/users/?walletAddress=${encodeURIComponent(address)}`
+        );
+        const data = await res.json();
+
+        if (res.ok && data.exists) {
+          router.push(`/Dashboard?wallet=${address}`);
+        } else {
+          router.push(`/CreateNewAccount?wallet=${address}`);
+        }
+      } catch (err) {
+        console.error("User rejected MetaMask connection:", err);
+      }
+    }
+  }
+  useEffect(() => {
+    autoLoginCheck();
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }
+  , []);
   const handleMetaMaskLogin = async () => {
     if (typeof window.ethereum !== "undefined") {
       const client = createWalletClient({
