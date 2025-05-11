@@ -40,31 +40,39 @@
 .DashboardHeader {
   display: flex;
   width: 90%;
-  padding: 6px 0px;
+  padding: 0px 0px;
   margin: auto;
   justify-content: space-between;
   align-items: center;
 }
-
+.DashboardHeader-dark {
+  display: flex;
+  width: 90%;
+  padding: 0px 0px;
+  margin: auto;
+  justify-content: space-between;
+  align-items: center;
+}
 .DashboardHeader .nav ul {
   display: flex;
-  align-items: center;
 }
-
-.DashboardHeader ul li {
-  font-family: "Inter";
-  margin: 0px 12px;
-  cursor: pointer;
+.DashboardHeader-dark .nav ul {
   display: flex;
-  align-items: center;
-  font-weight: 500;
-  font-size: 22px;
-  list-style: none;
-  transition: 0.1s ease;
-  height: 50px;
-  color: rgb(63, 62, 62);
 }
-
+.DashboardHeader ul {
+  height: 40px;
+}
+.DashboardHeader-dark ul {
+  height: 40px;
+}
+.DashboardHeader ul li, .DashboardHeader-dark ul li{
+  font-family: "Inter";
+  margin: 0px 10px;
+  cursor: pointer;
+  font-weight: 550;
+  font-size: 19px;
+  list-style: none;
+}
 .WalboId {
   display: flex;
   width: 90%;
@@ -78,6 +86,10 @@
 .DashboardHeader ul li:hover {
   border-bottom: 2px solid #ff914d;
   color: black;
+}
+.DashboardHeader-dark ul li:hover {
+  border-bottom: 2px solid #ff914d;
+  color: white;
 }
 
 .AccountRelatedOperations {
