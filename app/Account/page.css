@@ -14,11 +14,18 @@
   font-style: normal;
 }
 
-
 .DashboardHeader {
   display: flex;
   width: 90%;
-  padding: 6px 0px;
+  padding: 0px 0px;
+  margin: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+.DashboardHeader-dark {
+  display: flex;
+  width: 90%;
+  padding: 0px 0px;
   margin: auto;
   justify-content: space-between;
   align-items: center;
@@ -26,7 +33,11 @@
 .DashboardHeader .nav ul {
   display: flex;
 }
-.DashboardHeader ul li {
+.DashboardHeader-dark .nav ul {
+  display: flex;
+}
+.DashboardHeader ul li,
+.DashboardHeader-dark ul li {
   font-family: "Inter";
   margin: 0px 10px;
   cursor: pointer;
@@ -34,7 +45,12 @@
   font-size: 19px;
   list-style: none;
 }
-
+.DashboardHeader ul {
+  height: 40px;
+}
+.DashboardHeader-dark ul {
+  height: 40px;
+}
 .logo {
   width: 200px;
 }
@@ -168,4 +184,8 @@
 .transactionHistoryButton:hover {
   cursor: pointer;
   border-bottom: 1px solid black;
+}
+.transactionHistoryButton-dark:hover {
+  cursor: pointer;
+  border-bottom: 1px solid white;
 }

@@ -4,6 +4,17 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+/* styles/globals.css */
+body.dark {
+  background-color: #141414;
+  color: white;
+}
+
+input.form-control.bg-dark::placeholder {
+  color: #ccc;
+  opacity: 1; /* Ensures visibility */
+}
+/* Add light mode default styles here */
 
 @theme inline {
   --color-background: var(--background);
@@ -12,9 +23,19 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
+.darkModeToggle {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 15px;
+}
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+.DashboardHeader ul {
+  height: 40px;
+}
+.DashboardHeader-dark ul {
+  height: 40px;
 }

@@ -17,7 +17,15 @@
 .DashboardHeader {
   display: flex;
   width: 90%;
-  padding: 6px 0px;
+  padding: 0px 0px;
+  margin: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+.DashboardHeader-dark {
+  display: flex;
+  width: 90%;
+  padding: 0px 0px;
   margin: auto;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +33,18 @@
 .DashboardHeader .nav ul {
   display: flex;
 }
+.DashboardHeader-dark .nav ul {
+  display: flex;
+}
 .DashboardHeader ul li {
+  font-family: "Inter";
+  margin: 0px 10px;
+  cursor: pointer;
+  font-weight: 550;
+  font-size: 19px;
+  list-style: none;
+}
+.DashboardHeader-dark ul li {
   font-family: "Inter";
   margin: 0px 10px;
   cursor: pointer;
