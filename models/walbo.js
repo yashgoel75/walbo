@@ -1,4 +1,4 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose, { mongo } from "mongoose";
 
 const contactSchema = new mongoose.Schema({
   walboId: {
@@ -15,52 +15,55 @@ const contactSchema = new mongoose.Schema({
   },
 });
 
-const transactionHistorySchema = new mongoose.Schema({
-  type: {
-    type: String,
-    required: true,
+const transactionHistorySchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      required: true,
+    },
+    fromWalboId: {
+      type: String,
+      required: true,
+    },
+    toWalboId: {
+      type: String,
+      required: false,
+    },
+    fromName: {
+      type: String,
+      required: false,
+    },
+    toName: {
+      type: String,
+      required: false,
+    },
+    fromPublicKey: {
+      type: String,
+      required: true,
+    },
+    toPublicKey: {
+      type: String,
+      required: true,
+    },
+    amount: {
+      type: String,
+      required: true,
+    },
+    remark: {
+      type: String,
+      required: false,
+    },
+    status: {
+      type: String,
+      required: true,
+    },
+    transactionHash: {
+      type: String,
+      required: false,
+    },
   },
-  fromWalboId: {
-    type: String,
-    required: true,
-  },
-  toWalboId: {
-    type: String,
-    required: false,
-  },
-  fromName: {
-    type: String,
-    required: false,
-  },
-  toName: {
-    type: String,
-    required: false,
-  },
-  fromPublicKey: {
-    type: String,
-    required: true,
-  },
-  toPublicKey: {
-    type: String,
-    required: true,
-  },
-  amount: {
-    type: String  ,
-    required: true,
-  },
-  remark: {
-    type: String,
-    required: false,
-  },
-  status: {
-    type: String,
-    required: true,
-  },
-  transactionHash: {
-    type: String,
-    required: false,
-  },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 const walboSchema = new mongoose.Schema({
   walboId: {
@@ -70,7 +73,7 @@ const walboSchema = new mongoose.Schema({
   },
   walletAddress: {
     type: String,
-      required: true,
+    required: true,
     unique: true,
     // validate: {
     //   validator: function(v) {
@@ -83,6 +86,6 @@ const walboSchema = new mongoose.Schema({
   transactionHistory: [transactionHistorySchema],
 });
 
-const Walbo = mongoose.models.Walbo || mongoose.model('Walbo', walboSchema);
+const Walbo = mongoose.models.Walbo || mongoose.model("Walbo", walboSchema);
 
 export default Walbo;

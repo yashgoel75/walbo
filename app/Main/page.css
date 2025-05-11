@@ -72,17 +72,17 @@
 .installMetaMask {
   background-color: rgba(228, 60, 60, 0.822);
 
-    color: rgb(104, 1, 1);
+  color: rgb(104, 1, 1);
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    font-family: "Cal Sans";
-    padding: 5px 10px;
-    margin: 8px 0px 0px 0px;
-    font-weight: 500;
-    border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-family: "Cal Sans";
+  padding: 5px 10px;
+  margin: 8px 0px 0px 0px;
+  font-weight: 500;
+  border-radius: 6px;
 }
 .connected {
   display: flex;

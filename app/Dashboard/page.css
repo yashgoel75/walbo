@@ -25,7 +25,6 @@
   display: flex;
   justify-content: flex-end;
   padding: 5px 10px;
-
 }
 
 .walbo-container-true {
@@ -65,7 +64,8 @@
 .DashboardHeader-dark ul {
   height: 40px;
 }
-.DashboardHeader ul li, .DashboardHeader-dark ul li{
+.DashboardHeader ul li,
+.DashboardHeader-dark ul li {
   font-family: "Inter";
   margin: 0px 10px;
   cursor: pointer;

@@ -351,60 +351,64 @@ function ContactList() {
                 </tr>
               </thead>
               <tbody>
-                {[...filteredTransactionHistory].reverse().map((transaction, index) => (
-                  <tr
-                    key={index}
-                    onClick={() => handleRowClick(transaction)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>
-                      {transaction.type === "0" ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
-                          viewBox="0 -960 960 960"
-                          width="24px"
-                          fill="#78A75A"
-                        >
-                          <path d="M200-200v-400h80v264l464-464 56 56-464 464h264v80H200Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
-                          viewBox="0 -960 960 960"
-                          width="24px"
-                          fill="#EA3323"
-                        >
-                          <path d="m216-160-56-56 464-464H360v-80h400v400h-80v-264L216-160Z" />
-                        </svg>
-                      )}
-                    </td>
-                    <td>{dayjs(transaction.createdAt).format("DD-MM-YYYY")}</td>
-                    <td>{dayjs(transaction.createdAt).format("hh:mm A")}</td>
-                    <td>
-                      {transaction.fromName ||
-                        transaction.fromWalboId ||
-                        transaction.fromPublicKey}
-                    </td>
-                    <td>
-                      {transaction.toName ||
-                        transaction.toWalboId ||
-                        transaction.toPublicKey}
-                    </td>
-                    <td>{transaction.amount} SepoliaETH</td>
-                    <td>{transaction.remark || "N/A"}</td>
-                    <td>
-                      {transaction.status === "Pending" ? (
-                        <span className="badge bg-warning">Pending</span>
-                      ) : transaction.status === "Success" ? (
-                        <span className="badge bg-success">Success</span>
-                      ) : (
-                        <span className="badge bg-danger">Failed</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {[...filteredTransactionHistory]
+                  .reverse()
+                  .map((transaction, index) => (
+                    <tr
+                      key={index}
+                      onClick={() => handleRowClick(transaction)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>
+                        {transaction.type === "0" ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#78A75A"
+                          >
+                            <path d="M200-200v-400h80v264l464-464 56 56-464 464h264v80H200Z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#EA3323"
+                          >
+                            <path d="m216-160-56-56 464-464H360v-80h400v400h-80v-264L216-160Z" />
+                          </svg>
+                        )}
+                      </td>
+                      <td>
+                        {dayjs(transaction.createdAt).format("DD-MM-YYYY")}
+                      </td>
+                      <td>{dayjs(transaction.createdAt).format("hh:mm A")}</td>
+                      <td>
+                        {transaction.fromName ||
+                          transaction.fromWalboId ||
+                          transaction.fromPublicKey}
+                      </td>
+                      <td>
+                        {transaction.toName ||
+                          transaction.toWalboId ||
+                          transaction.toPublicKey}
+                      </td>
+                      <td>{transaction.amount} SepoliaETH</td>
+                      <td>{transaction.remark || "N/A"}</td>
+                      <td>
+                        {transaction.status === "Pending" ? (
+                          <span className="badge bg-warning">Pending</span>
+                        ) : transaction.status === "Success" ? (
+                          <span className="badge bg-success">Success</span>
+                        ) : (
+                          <span className="badge bg-danger">Failed</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

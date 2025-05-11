@@ -14,7 +14,6 @@
   font-style: normal;
 }
 
-
 .DashboardHeader {
   display: flex;
   width: 90%;
@@ -37,7 +36,8 @@
 .DashboardHeader-dark .nav ul {
   display: flex;
 }
-.DashboardHeader ul li, .DashboardHeader-dark ul li{
+.DashboardHeader ul li,
+.DashboardHeader-dark ul li {
   font-family: "Inter";
   margin: 0px 10px;
   cursor: pointer;

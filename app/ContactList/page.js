@@ -271,7 +271,9 @@ function ContactList() {
       </div>
       <div className="input-group mt-3 container">
         <input
-className={`form-control ${isDark ? "bg-dark text-light" : "bg-light text-dark"}`}
+          className={`form-control ${
+            isDark ? "bg-dark text-light" : "bg-light text-dark"
+          }`}
           type="text"
           name="search"
           id="search"
@@ -280,7 +282,9 @@ className={`form-control ${isDark ? "bg-dark text-light" : "bg-light text-dark"}
           onChange={handleSearch}
         />
         <div
-          className={`input-group-text btn btn-dark ${isDark ? "btn-secondary btn-outline-light" : "btn-dark"}`}
+          className={`input-group-text btn btn-dark ${
+            isDark ? "btn-secondary btn-outline-light" : "btn-dark"
+          }`}
           onClick={handleAddContact}
         >
           Add New Contact
@@ -290,7 +294,11 @@ className={`form-control ${isDark ? "bg-dark text-light" : "bg-light text-dark"}
 
       <div className="container">
         {filteredContacts.length > 0 ? (
-          <table className={`table ${isDark ? "table-dark" : ""} table-hover container`}>
+          <table
+            className={`table ${
+              isDark ? "table-dark" : ""
+            } table-hover container`}
+          >
             <thead>
               <tr>
                 <th scope="col">Name</th>
@@ -354,13 +362,17 @@ className={`form-control ${isDark ? "bg-dark text-light" : "bg-light text-dark"}
                     {editContact && editContact._id === contact._id ? (
                       <div className="btn-group">
                         <button
-                          className={`btn ${isDark ? "btn-warning" : "btn-outline-primary"}`}
+                          className={`btn ${
+                            isDark ? "btn-warning" : "btn-outline-primary"
+                          }`}
                           onClick={handleSaveEdit}
                         >
                           Save
                         </button>
                         <button
-                          className={`btn ${isDark ? "btn-danger" : "btn-outline-danger"}`}
+                          className={`btn ${
+                            isDark ? "btn-danger" : "btn-outline-danger"
+                          }`}
                           onClick={() => setEditContact(null)}
                         >
                           Cancel
@@ -369,13 +381,17 @@ className={`form-control ${isDark ? "bg-dark text-light" : "bg-light text-dark"}
                     ) : (
                       <div className="btn-group">
                         <button
-                          className={`btn ${isDark ? "btn-warning" : "btn-outline-primary"}`}
+                          className={`btn ${
+                            isDark ? "btn-warning" : "btn-outline-primary"
+                          }`}
                           onClick={() => handleEditContact(contact)}
                         >
                           Edit
                         </button>
                         <button
-                          className={`btn ${isDark ? "btn-danger" : "btn-outline-danger"}`}
+                          className={`btn ${
+                            isDark ? "btn-danger" : "btn-outline-danger"
+                          }`}
                           onClick={() => handleDeleteContact(contact._id)}
                         >
                           Delete
