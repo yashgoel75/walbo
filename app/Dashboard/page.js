@@ -271,6 +271,7 @@ function Dashboard() {
         setIsPublicTransactionSuccess(true);
         setAmount("");
         setReceiverAddress("");
+        setRemark("");
 
         // Update sender transaction history
         const res = await fetch("/api/users", {

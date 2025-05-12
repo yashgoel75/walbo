@@ -8,6 +8,9 @@
 - Send payments via Walbo ID, contact list, or public key
 - Real-time Walbo ID verification before sending
 - Smart contact management (add, edit, delete)
+- View your full transaction history, including both sent and received payments (if the receiver uses Walbo)
+- Easily search through your past transactions with smart filtering tools.
+- Enjoy a comfortable viewing experience with built-in dark mode support.
 - ETH wallet balance display
 - One-click MetaMask login
 - Auto logout when MetaMask is disconnected
