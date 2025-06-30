@@ -33,7 +33,10 @@ function Account() {
     if (!contactWalboId.trim()) return;
     try {
       const res = await fetch(
-        `/api/users?walboId=${encodeURIComponent(contactWalboId)}`
+        `/api/users?walboId=${encodeURIComponent(contactWalboId)}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       const data = await res.json();
       if (data.exists) {
@@ -59,7 +62,8 @@ function Account() {
     try {
       const res = await fetch("/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` }, 
+
         body: JSON.stringify({
           walboId, // Current user's walboId
           contact: {
@@ -103,7 +107,11 @@ function Account() {
     const fetchWalboId = async () => {
       try {
         const res = await fetch(
-          `/api/users?walletAddress=${encodeURIComponent(address)}`
+          `/api/users?walletAddress=${encodeURIComponent(address)}`,
+          {
+                                    headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
+
+          }
         );
         const data = await res.json();
         if (data.exists) {

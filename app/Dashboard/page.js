@@ -90,7 +90,10 @@ function Dashboard() {
   const fetchWalboIdAndContacts = async () => {
     try {
       const res = await fetch(
-        `/api/users?walletAddress=${encodeURIComponent(address)}`
+        `/api/users?walletAddress=${encodeURIComponent(address)}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       const data = await res.json();
       if (data.exists) {
@@ -163,7 +166,10 @@ function Dashboard() {
     }
     try {
       const res = await fetch(
-        `/api/users?walboId=${encodeURIComponent(contactWalboId)}`
+        `/api/users?walboId=${encodeURIComponent(contactWalboId)}`, {
+                                  headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
+
+        }
       );
       const data = await res.json();
       if (data.exists) {
@@ -210,14 +216,20 @@ function Dashboard() {
     try {
       // Fetch sender data
       const resSender = await fetch(
-        `/api/users?walletAddress=${encodeURIComponent(address)}`
+        `/api/users?walletAddress=${encodeURIComponent(address)}`, {
+                                  headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
+
+        }
       );
       if (!resSender.ok) throw new Error("Failed to fetch sender data");
       const data = await resSender.json();
 
       // Fetch receiver data
       const resReceiver = await fetch(
-        `/api/users?walletAddress=${encodeURIComponent(receiverAddress)}`
+        `/api/users?walletAddress=${encodeURIComponent(receiverAddress)}`, {
+                                  headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
+
+        }
       );
       if (resReceiver.ok) {
         const dataReceiver = await resReceiver.json();
@@ -276,7 +288,8 @@ function Dashboard() {
         // Update sender transaction history
         const res = await fetch("/api/users", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+
           body: JSON.stringify({
             walboId,
             transactionHistory: {
@@ -303,7 +316,8 @@ function Dashboard() {
         if (receiverExists) {
           const resReceiver = await fetch("/api/users", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+
             body: JSON.stringify({
               walboId: receiverWalboId,
               transactionHistory: {
@@ -331,7 +345,8 @@ function Dashboard() {
       console.error("Transaction error:", error);
       const res = await fetch("/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+
         body: JSON.stringify({
           walboId,
           transactionHistory: {

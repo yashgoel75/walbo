@@ -68,7 +68,10 @@ function ContactList() {
   const fetchTransactionHistory = async () => {
     try {
       const res = await fetch(
-        `/api/users?walletAddress=${encodeURIComponent(address)}`
+        `/api/users?walletAddress=${encodeURIComponent(address)}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       const data = await res.json();
       if (data.exists) {

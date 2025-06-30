@@ -39,42 +39,68 @@ function Main() {
   //     console.error("Google Sign-In Error:", error);
   //   }
   // };
+
+  async function handleLogin(walletAddress) {
+  try {
+    const res = await fetch(`/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ walletAddress }),
+    });
+    const data = await res.json();
+    localStorage.setItem("token", data.token);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
   const handleMetaMaskLogin = async () => {
-    if (typeof window.ethereum !== "undefined") {
-      const client = createWalletClient({
-        chain: sepolia,
-        transport: custom(window.ethereum),
-      });
+  if (typeof window.ethereum !== "undefined") {
+    const client = createWalletClient({
+      chain: sepolia,
+      transport: custom(window.ethereum),
+    });
 
-      try {
-        setisRequestRejected(false);
-        setisConnecting(true);
-        const [address] = await client.requestAddresses();
-        console.log("Connected wallet address:", address);
-        setisConnecting(false);
-        setisConnected(true);
+    try {
+      setisRequestRejected(false);
+      setisConnecting(true);
+      const [address] = await client.requestAddresses();
+      console.log("Connected wallet address:", address);
+      setisConnecting(false);
+      setisConnected(true);
 
-        // Check if wallet address is already registered
-        const res = await fetch(
-          `/api/users/?walletAddress=${encodeURIComponent(address)}`
-        );
-        const data = await res.json();
+      // Authenticate user and get token
+      await handleLogin(address);
 
-        if (res.ok && data.exists) {
-          router.push(`/Dashboard?wallet=${address}`);
-        } else {
-          router.push(`/CreateNewAccount?wallet=${address}`);
+      // Check if user already exists
+      const res = await fetch(
+        `/api/users/?walletAddress=${encodeURIComponent(address)}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      } catch (err) {
-        setisConnecting(false);
-        setisRequestRejected(true);
-        setTimeout(() => setisRequestRejected(false), 1000);
-        console.error("User rejected MetaMask connection:", err);
+      );
+      const data = await res.json();
+
+      if (res.ok && data.exists) {
+        router.push(`/Dashboard?wallet=${address}`);
+      } else {
+        router.push(`/CreateNewAccount?wallet=${address}`);
       }
-    } else {
-      setmetamaskinstalled(false);
+    } catch (err) {
+      setisConnecting(false);
+      setisRequestRejected(true);
+      setTimeout(() => setisRequestRejected(false), 1000);
+      console.error("User rejected MetaMask connection or login error:", err);
     }
-  };
+  } else {
+    setmetamaskinstalled(false);
+  }
+};
+
+
 
   return (
     <>

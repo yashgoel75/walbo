@@ -51,7 +51,9 @@ function ContactList() {
   const fetchWalboIdAndContacts = async () => {
     try {
       const res = await fetch(
-        `/api/users?walletAddress=${encodeURIComponent(address)}`
+        `/api/users?walletAddress=${encodeURIComponent(address)}`,
+        {          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+}
       );
       const data = await res.json();
 
@@ -141,7 +143,7 @@ function ContactList() {
     try {
       const res = await fetch("/api/users", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${localStorage.getItem("token")}`},
         body: JSON.stringify({
           walboId,
           contactId: editContact._id,
@@ -173,7 +175,7 @@ function ContactList() {
     try {
       const res = await fetch("/api/users", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ walboId, contactId }),
       });
 
