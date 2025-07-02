@@ -17,8 +17,6 @@ import { createWalletClient, custom } from "viem";
 import { flare, sepolia } from "viem/chains";
 
 function Main() {
-  const searchParams = useSearchParams();
-  const url = searchParams.get("redirectUrl");
   const [isDark, toggleDarkMode] = useDarkMode();
 
   const router = useRouter();
@@ -87,7 +85,7 @@ function Main() {
         const data = await res.json();
 
         if (res.ok && data.exists) {
-          router.push(`/${url ? url : `Dashboard`}?wallet=${address}`);
+          router.push(`/Dashboard?wallet=${address}`);
         } else {
           router.push(`/CreateNewAccount?wallet=${address}`);
         }
