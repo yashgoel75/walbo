@@ -26,7 +26,7 @@ export async function POST(request) {
     await connectMongoDB();
 
     const dbUser = await Walbo.findOne({ walboId: body.walboId });
-    if (!dbUser || dbUser.walletAddress !== tokenUser.walletAddress) {
+    if (dbUser.walletAddress !== tokenUser.walletAddress) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
