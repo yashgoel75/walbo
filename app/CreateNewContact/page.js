@@ -60,16 +60,20 @@ function Account() {
 
   const handleAccountCreation = async () => {
     try {
+      console.log("Walbo ID: ", walboId);
       const res = await fetch("/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` }, 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
 
         body: JSON.stringify({
-          walboId, // Current user's walboId
+          walboId,
           contact: {
             name,
             publicKey,
-            walboId: contactWalboId || undefined, // Optional contact walboId
+            walboId: contactWalboId || undefined,
           },
         }),
       });
@@ -108,13 +112,13 @@ function Account() {
       try {
         const res = await fetch(
           `/api/users?walletAddress=${encodeURIComponent(address)}`,
-          {
-                                    headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
-
-          }
+           {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
         );
         const data = await res.json();
         if (data.exists) {
+          console.log("Walbo ID from Data:", data.walboId);
           setWalboId(data.walboId);
         }
       } catch (err) {
@@ -125,7 +129,9 @@ function Account() {
     if (address) {
       fetchWalboId();
     }
-  }, [address]);
+  });
+
+  console.log("Address:", address);
 
   const main = async () => {
     if (typeof window.ethereum !== "undefined") {

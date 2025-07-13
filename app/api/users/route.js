@@ -3,10 +3,9 @@ import { connectMongoDB } from "@/libs/mongodb";
 import Walbo from "@/models/walbo";
 import jwt from "jsonwebtoken";
 
-// Token verification helper
 function verifyToken(req) {
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!authHeader || !authHeader.startsWith("Bearer")) {
     throw new Error("No token provided");
   }
   const token = authHeader.split(" ")[1];
@@ -21,17 +20,16 @@ function verifyToken(req) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const tokenUser = verifyToken(request);
 
     await connectMongoDB();
 
-    const dbUser = await Walbo.findOne({ walboId: body.walboId });
-    if (dbUser.walletAddress !== tokenUser.walletAddress) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
-    }
-
-    // CASE 1: Create new user
-    if (body.walletAddress && body.walboId && !body.contact && !body.transactionHistory) {
+    // CASE 1: Create new user (no token required)
+    if (
+      body.walletAddress &&
+      body.walboId &&
+      !body.contact &&
+      !body.transactionHistory
+    ) {
       const { walletAddress, walboId } = body;
 
       const existingUser = await Walbo.findOne({
@@ -39,7 +37,10 @@ export async function POST(request) {
       });
 
       if (existingUser) {
-        return NextResponse.json({ message: "User already exists" }, { status: 409 });
+        return NextResponse.json(
+          { message: "User already exists" },
+          { status: 409 }
+        );
       }
 
       const newUser = new Walbo({
@@ -50,14 +51,28 @@ export async function POST(request) {
       });
 
       await newUser.save();
-      return NextResponse.json({ message: "User created", user: newUser }, { status: 201 });
+      return NextResponse.json(
+        { message: "User created", user: newUser },
+        { status: 201 }
+      );
+    }
+
+    // For other operations (add transaction or contact), token is required
+    const tokenUser = verifyToken(request);
+    const dbUser = await Walbo.findOne({ walboId: body.walboId });
+
+    if (!dbUser || dbUser.walletAddress !== tokenUser.walletAddress) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
     // CASE 2: Add transaction
     if (body.transactionHistory) {
       dbUser.transactionHistory.push(body.transactionHistory);
       await dbUser.save();
-      return NextResponse.json({ message: "Transaction added", user: dbUser }, { status: 200 });
+      return NextResponse.json(
+        { message: "Transaction added", user: dbUser },
+        { status: 200 }
+      );
     }
 
     // CASE 3: Add contact
@@ -65,7 +80,10 @@ export async function POST(request) {
       const contact = body.contact;
 
       if (!contact.name || !contact.publicKey) {
-        return NextResponse.json({ message: "Missing contact fields" }, { status: 400 });
+        return NextResponse.json(
+          { message: "Missing contact fields" },
+          { status: 400 }
+        );
       }
 
       const exists = dbUser.contacts?.some(
@@ -75,18 +93,30 @@ export async function POST(request) {
       );
 
       if (exists) {
-        return NextResponse.json({ message: "Contact already exists" }, { status: 409 });
+        return NextResponse.json(
+          { message: "Contact already exists" },
+          { status: 409 }
+        );
       }
 
       dbUser.contacts.push(contact);
       await dbUser.save();
-      return NextResponse.json({ message: "Contact added", user: dbUser }, { status: 200 });
+      return NextResponse.json(
+        { message: "Contact added", user: dbUser },
+        { status: 200 }
+      );
     }
 
-    return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 }
+    );
   } catch (err) {
-    console.error("POST error:", err);
-    return NextResponse.json({ message: "Server Error", error: err.message }, { status: 500 });
+    console.error("POST error:", err.stack || err);
+    return NextResponse.json(
+      { message: "Server Error", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -117,7 +147,10 @@ export async function GET(request) {
 
       const user = await Walbo.findOne({ walletAddress });
       if (!user) {
-        return NextResponse.json({ message: "User not found" }, { status: 404 });
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
       }
 
       return NextResponse.json({
@@ -128,10 +161,16 @@ export async function GET(request) {
       });
     }
 
-    return NextResponse.json({ message: "Missing query parameter" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Missing query parameter" },
+      { status: 400 }
+    );
   } catch (err) {
     console.error("GET error:", err);
-    return NextResponse.json({ message: "Server Error", error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server Error", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -148,9 +187,14 @@ export async function PATCH(request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    const contactIndex = user.contacts.findIndex((c) => c._id.toString() === contactId);
+    const contactIndex = user.contacts.findIndex(
+      (c) => c._id.toString() === contactId
+    );
     if (contactIndex === -1) {
-      return NextResponse.json({ message: "Contact not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Contact not found" },
+        { status: 404 }
+      );
     }
 
     const exists = user.contacts.some(
@@ -161,7 +205,10 @@ export async function PATCH(request) {
     );
 
     if (exists) {
-      return NextResponse.json({ message: "Duplicate contact" }, { status: 409 });
+      return NextResponse.json(
+        { message: "Duplicate contact" },
+        { status: 409 }
+      );
     }
 
     user.contacts[contactIndex] = {
@@ -172,10 +219,16 @@ export async function PATCH(request) {
     };
 
     await user.save();
-    return NextResponse.json({ message: "Contact updated", user }, { status: 200 });
+    return NextResponse.json(
+      { message: "Contact updated", user },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("PATCH error:", err);
-    return NextResponse.json({ message: "Server Error", error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server Error", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -192,16 +245,27 @@ export async function DELETE(request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    const index = user.contacts.findIndex((c) => c._id.toString() === contactId);
+    const index = user.contacts.findIndex(
+      (c) => c._id.toString() === contactId
+    );
     if (index === -1) {
-      return NextResponse.json({ message: "Contact not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Contact not found" },
+        { status: 404 }
+      );
     }
 
     user.contacts.splice(index, 1);
     await user.save();
-    return NextResponse.json({ message: "Contact deleted", user }, { status: 200 });
+    return NextResponse.json(
+      { message: "Contact deleted", user },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("DELETE error:", err);
-    return NextResponse.json({ message: "Server Error", error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server Error", error: err.message },
+      { status: 500 }
+    );
   }
 }
